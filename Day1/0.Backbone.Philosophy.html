@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title>Backbone Training :: Models</title>
+  
+  <meta name="description" content="Models">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+  
+  <!-- Core and extension CSS files -->
+  <link rel="stylesheet" href="resources/deck.js/core/deck.core.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/status/deck.status.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/hash/deck.hash.css">
+  <link rel="stylesheet" href="resources/highlightJS/github.css">
+
+  <!-- include code mirror default css and the theme you want. -->
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/deck.codemirror.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/themes/default.css">
+
+  <!-- Theme CSS files (menu swaps these out) -->
+  <link rel="stylesheet" id="transition-theme-link" href="resources/deck.js/themes/transition/fade.css">
+  
+  <link rel="stylesheet" href="resources/slides.css"> 
+  
+  <script src="resources/modernizr.custom.js"></script>
+</head>
+
+<body>
+    
+    <article class="deck-container">
+
+      <section class="slide" id="1">
+        <div>
+          <h1> Section #1 - Backbone Philosophy</h1>
+          <h3>
+            Bocoup Backbone.js Training
+          </h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="2">
+        <div>
+          <h2>About</h2>
+<p>Backbone.js is an MVC library that assists with organization and structure
+of modern web applications.
+
+</p>
+<p>It has the following dependencies:
+
+</p>
+<ul>
+<li><a href="http://underscorejs.org">Underscore.js</a> or <a href="http://lodash.com">lodash</a></li>
+<li><a href="http://jquery.com">jQuery</a> or <a href="http://zeptojs.com">zepto.js</a></li>
+</ul>
+<p>Documentation and project information:
+
+</p>
+<ul>
+<li><a href="http://backbonejs.org"><a href="http://backbonejs.org">http://backbonejs.org</a></a></li>
+</ul>
+<p>Source Code on GitHub:
+
+</p>
+<ul>
+<li><a href="http://github.com/documentcloud/backbone"><a href="http://github.com/documentcloud/backbone">http://github.com/documentcloud/backbone</a></a></li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="3">
+        <div>
+          <h2>Community</h2>
+<p>Backbone.js is in a very unique position of having a thriving community.  Where
+the docs fall short, there is no shortage of answers and community discussion
+happening in the unofficial and official support channels.
+
+</p>
+<p>Excellent support resources:
+
+</p>
+<ul>
+<li><strong>IRC</strong> #documentcloud on irc.freenode.com</li>
+<li><strong>Discussion group</strong> <a href="http://groups.google.com/group/backbonejs/topics">http://groups.google.com/group/backbonejs/topics</a> </li>
+<li><strong>Stack Overflow</strong> <a href="http://stackoverflow.com/questions/tagged/backbone.js">http://stackoverflow.com/questions/tagged/backbone.js</a></li>
+</ul>
+<p>Support is not the only thing excellent about the community; there are
+numerous contributors to the project as well as plugin creators and
+excellent posts on how to better use the library.
+
+</p>
+<ul>
+<li><a href="https://github.com/scttnlsn/backbone.io">https://github.com/scttnlsn/backbone.io</a></li>
+<li><a href="https://github.com/derickbailey/backbone.marionette">https://github.com/derickbailey/backbone.marionette</a></li>
+<li><a href="https://github.com/jeromegn/Backbone.localStorage">https://github.com/jeromegn/Backbone.localStorage</a></li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="4">
+        <div>
+          <h2>Today&#39;s Javascript Applications</h2>
+<p>Building web applications that are javascript heavy is the new sliced bread, 
+but it requires a different thought process. 
+There&#39;s a great deal of learning and evolution that happens. 
+
+</p>
+<p>Some of us start with code that looks like this:
+
+</p>
+<div>
+  <textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+// open new group dialog
+$(&#39;#new-group a.open&#39;).live(&#39;click&#39;, function() {
+  $(&#39;#new-group a.open&#39;).hide();
+  $(&#39;#new-group a.close&#39;).show();
+  $(&#39;#new-document-dialog&#39;).hide();
+  $(&#39;#new-group-dialog&#39;).show();
+  $(&#39;#group_name&#39;).focus();
+  return false;
+});
+
+// close new group dialog
+$(&#39;#new-group a.close&#39;).live(&#39;click&#39;, function() {
+  $(&#39;#new-group a.open&#39;).show();
+  $(&#39;#new-group a.close&#39;).hide();
+  $(&#39;#new-document-dialog&#39;).show();
+  $(&#39;#new-group-dialog&#39;).hide();
+  return false;
+});
+
+// get some user data
+$.ajax({
+  url : <a href="http://myserver.com/data.json">http://myserver.com/data.json</a>,
+  type : &quot;GET&quot;,
+  success: function(response) {
+    $(&#39;#user-data span.name&#39;).html(response.name);
+    $(&#39;#user-data span.email&#39;).html(response.email);
+    //...
+  }
+});
+// etc...
+  </textarea>
+</div>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="5">
+        <div>
+          <h1>Imagine that all this code is in one application.js and that it&#39;s 5000 lines long.</h1>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="6">
+        <div>
+          <h2>What&#39;s Wrong With That Code?</h2>
+<ul>
+  <li class="slide">It&#39;s all UI powered - Event driven callbacks</li>
+  <li class="slide">Repetitive (how many times are we going to select that element?</li>
+  <li class="slide">Not organized into logical groups (UI components, data separation)</li>
+  <li class="slide">Hard to follow the flow</li>
+  <li class="slide">Tightly coupled data and views</li>
+  <li class="slide">Lack of Inheritance resulting in duplication of attributes and lack of propagation of common behavior.</li>
+  <li class="slide">All UI components built using jQuery (no templating etc.)</li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="7">
+        <div>
+          <h2>What Does Backbone Provide?</h2>
+<p>Backbone.js (and underscore.js) provide a number of useful utilities for 
+building web applications.  This includes:
+
+</p>
+<ul>
+  <li class="slide">
+    Class inheritence
+  </li>
+  <li class="slide">
+    Event system
+  </li>
+  <li class="slide">
+    History management
+  </li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="8">
+        <div>
+          <h2>Where does Backbone Fit?</h2>
+<p><img src="Support/020.BackboneRole.png" />
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="9">
+        <div>
+          <h2>What Backbone Isn&#39;t</h2>
+<p>Intentionally Minimal API.
+
+</p>
+<p>Supports writing clean &amp; organized code.
+
+</p>
+<p>Isn&#39;t meant to offer rich features like data-binding, controllers, view management etc.
+
+</p>
+<p>Backbone&#39;s leanness is useful for when you only need to use a few stuctures from it.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="10">
+        <div>
+          <h2>Is Backbone MVC?</h2>
+<p>Backbone is non-traditional MVC, but it does provide class structures for:
+
+</p>
+<ul>
+  <li class="slide">Models</li>
+  <li class="slide">Collections</li>
+  <li class="slide">Views</li>
+  <li class="slide">Routers</li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="11">
+        <div>
+          <h2>Inheritance</h2>
+<p>The inheritance model used within Backbone is prototypal which means that when
+you create a Model subclass, the definition of the Model will be stored inside
+its prototype.  This allows for singificantly better memory management, and
+also allows you to dynamically change your class definition at runtime.
+
+</p>
+<p>Typically you create <em>definitions</em> (your subclasses) immediately when the page
+loads, and outside of the DOM ready.  Then once the DOM is ready you
+<em>initialize</em> your Models/Collections/Views/Routers.
+
+</p>
+<p>A typical definition looks like
+
+</p>
+<pre><code class="lang-javascript">var MyModel = Backbone.Model.extend({
+  // Instance properties
+}, {
+  // Class properties
+});</code></pre>
+<p>A typical initialization looks like
+
+</p>
+<pre><code class="lang-javascript">var myModel = new MyModel();</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="12">
+        <div>
+          <h2>REST</h2>
+<p>The architecture of Backbone&#39;s Model and Collection URL fetching aligns with
+the REST design concepts.
+
+</p>
+<ul>
+<li><code>GET</code> /model/:id
+Gets an existing model from your server.</li>
+<li><code>POST</code> /model
+Creates a new model on your server.</li>
+<li><code>PUT</code> /model/:id
+Updates an existing model on your server.</li>
+<li><code>DELETE</code> /model/:id
+Deletes an existing model on your server.</li>
+</ul>
+<p>It&#39;s entirely possible to use non-REST APIs such as localStorage, WebSockets,
+FileSystem, etc.  This typically involves overriding <code>Backbone.sync</code> and using
+the <code>parse</code> method available on Models/Collections.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="13">
+        <div>
+          <h2>Modularity</h2>
+<p>Backbone&#39;s classes are designed for logical grouping.
+
+</p>
+<p>Modules are just Related Models + Collections + Views in separate files.
+<br />Modules afford isolation, managable units.
+
+</p>
+<p>Communication between modules is supported by the use of events.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="14">
+        <div>
+          <h2>Evented</h2>
+<p>Designed around events - Almost all class types emit events about their state. 
+
+</p>
+<p>Events are a powerful way to reduce coupling.
+
+</p>
+<p>Backbone encourages the use of events for:
+
+</p>
+<ul>
+<li>View updating on data change</li>
+<li>Maintaining State</li>
+<li>Inter-module communication</li>
+<li>Error handling</li>
+<li>Only triggering the <code>sync</code> event when you omit callbacks.</li>
+<li>Mixing into your existing objects</li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="15">
+        <div>
+          <h2>Override</h2>
+<p>There are times when developing that you simply cannot work through code that
+comes packaged with Backbone.  In these cases Backbone has been designed to be
+overwritten.
+
+</p>
+<p>Lets say you wanted to log every request that Backbone makes to your server.
+
+</p>
+<pre><code class="lang-javascript">// Keep copy of Backbone&#39;s version
+var originalSync = Backbone.sync;
+
+// New version which logs every request
+Backbone.sync = function() {
+  console.log(arguments);
+
+  // Call the original sync method
+  return originalSync.apply(this, arguments);
+};</code></pre>
+<p>You should take care not to override core methods, and instead opt for
+subclassing where possible.
+</p>
+
+        </div>
+      </section>
+
+      
+
+    </article>
+
+    <script src="resources/backbone/jquery.js"></script>
+    <script>window.jquery || document.write('<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.6.1.min.js">\x3c/script>')</script>
+
+    <!-- deck core and extensions -->
+    <script src="resources/deck.js/core/deck.core.js"></script>
+    <script src="resources/deck.js/extensions/menu/deck.menu.js"></script>
+    <script src="resources/deck.js/extensions/goto/deck.goto.js"></script>
+    <script src="resources/deck.js/extensions/status/deck.status.js"></script>
+    <script src="resources/deck.js/extensions/navigation/deck.navigation.js"></script>
+    <script src="resources/deck.js/extensions/hash/deck.hash.js"></script>
+
+    <!-- include the base codemirror code. -->
+    <script src="resources/deck.js/extensions/codemirror/codemirror.js"></script>
+
+    <!-- include the code syntax you want to highlight -->
+    <!-- javascript -->
+    <script src="resources/deck.js/extensions/codemirror/mode/javascript/javascript.js"></script>
+
+    <!-- html mode : note code miror requires xml, css and javasript modes for html rendering -->
+    <script src="resources/deck.js/extensions/codemirror/mode/xml/xml.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/css/css.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+
+    <script src="resources/deck.js/extensions/codemirror/deck.codemirror.js"></script>
+    <script src="resources/backbone/highlight.pack.js"></script>
+
+    <!-- Backbone resources -->
+    <script src="resources/backbone/lodash.js"></script>
+    <script src="resources/backbone/backbone.js"></script>
+
+    <!-- Stuff specific to this page -->
+    <script src="resources/slides.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>

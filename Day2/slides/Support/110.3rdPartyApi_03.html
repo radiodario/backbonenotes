@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Backbone Training - Router</title>
+  <link href='http://fonts.googleapis.com/css?family=Quicksand:700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body>
+  <h1>Backbone Training - 3rd Party API Examples</h1>
+  <div id="content">
+    <script src="https://gist.github.com/1362528.js?file=TwitterBackbone.js"></script>
+    <div id="response">
+      Response will go here...
+    </div>
+  </div>
+  
+  <!-- Load libraries -->
+  <script src="../resources/backbone/jquery.js"></script>
+  <script src="../resources/backbone/underscore.js"></script>
+  <script src="../resources/backbone/backbone.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+
+      // Create base tweet model and tweets collection.
+      var Tweet = Backbone.Model.extend({});
+      var Tweets = Backbone.Collection.extend({
+        model : Tweet,
+        initialize: function(options) {
+          this.query = options.query
+        },
+  
+        url: function() {
+          return "http://search.twitter.com/search.json?q="
+            + this.query + "&callback=?";
+        },
+
+        parse : function(response) {
+          return response.results;
+        }
+      });
+
+      var tweets = new Tweets({ query : "Puppies" });
+      tweets.fetch({ success : function(collection, response) {
+        console.log(collection.models);
+        $('div#response').html(JSON.stringify(collection.models));
+      }});
+    });
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title>Backbone Training :: Models</title>
+  
+  <meta name="description" content="Models">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+  
+  <!-- Core and extension CSS files -->
+  <link rel="stylesheet" href="resources/deck.js/core/deck.core.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/status/deck.status.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/hash/deck.hash.css">
+  <link rel="stylesheet" href="resources/highlightJS/github.css">
+
+  <!-- include code mirror default css and the theme you want. -->
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/deck.codemirror.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/themes/default.css">
+
+  <!-- Theme CSS files (menu swaps these out) -->
+  <link rel="stylesheet" id="transition-theme-link" href="resources/deck.js/themes/transition/fade.css">
+  
+  <link rel="stylesheet" href="resources/slides.css"> 
+  
+  <script src="resources/modernizr.custom.js"></script>
+</head>
+
+<body>
+    
+    <article class="deck-container">
+
+      <section class="slide" id="1">
+        <div>
+          <h1> Section #2 - Events</h1>
+          <h3>
+            Bocoup Backbone.js Training
+          </h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="2">
+        <div>
+          <h2>Why Events</h2>
+<h3>Coupling</h3>
+<p>Without events, a direct relationship must exist that ties components together.
+
+</p>
+<p>This is undesirable, because as an application grows, a decoupled architecture
+will scale, while a coupled relationship will become more complex and harder to
+maintain.
+
+</p>
+<h3>Asynchronicity</h3>
+<p>Backbone applications are built on top of asynchronous problems. Using events
+eliminates the direct coupling association that occurs during an initial
+action. Handling events in respective components makes code significantly more
+maintainable.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="3">
+        <div>
+          <h2>Coupled Architecture</h2>
+<p>Notice how when Views need to be updated from a data change, they are tightly
+coupled to the model&#39;s actual fetch:
+
+</p>
+<pre><code class="lang-javascript">model.set(&quot;title&quot;, &quot;hello&quot;);
+
+// These Views must be globally accessible
+parentView.render();
+childView.render();</code></pre>
+<p>And when asynchronous operations occur, the logic for handling the data is
+confined to the given model:
+
+</p>
+<pre><code class="lang-javascript">model.fetch().then(function() {
+  // These Views must be globally accessible
+  parentView.render();
+  childView.render();
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="4">
+        <div>
+          <h2>Events Solution</h2>
+<p>To solve the previous issue of highly coupled components, we can leverage the
+events that are built into the Backbone class structures to drive our Views.
+
+</p>
+<pre><code class="lang-javascript">var ParentView = Backbone.View.extend({
+  initialize: function() {
+    this.model.on(&quot;change&quot;, this.render, this);
+  }
+});
+
+var ChildView = Backbone.View.extend({
+  initialize: function() {
+    this.model.on(&quot;change&quot;, this.render, this);
+  }
+});
+
+// From anywhere in your application
+model.set(&quot;title&quot;, &quot;good bye&quot;);</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="5">
+        <div>
+          <h2>Mixing in Backbone.Events</h2>
+<p>Backbone event functionality is designed to be integrated into any of your
+existing objects.
+
+</p>
+<pre><code class="lang-javascript">var myObject = {};
+
+_.extend(myObject, Backbone.Events);</code></pre>
+<p>This is exactly how event functionality is available in all Backbone classes.
+
+</p>
+<pre><code class="lang-javascript">_.extend(Model.prototype, Events, ...</code></pre>
+<p>The Backbone object itself has the Backbone.Events mixin
+which allow you to use it as an event bus:
+
+</p>
+<pre><code class="lang-javascript">Backbone.on(&quot;notify&quot;, callback);</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="6">
+        <div>
+          <h2>Binding an Event</h2>
+<p>The event binding signature is:
+
+</p>
+<pre><code class="lang-javascript">on(eventName, callback, [context])</code></pre>
+<p>Binding to a custom event:
+
+</p>
+<pre><code class="lang-javascript">myObject.on(&quot;customEvent&quot;, function(data) {
+  console.log(data);
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="7">
+        <div>
+          <h2>jQueryStyle</h2>
+<p>If you rather use the jQuery style events, you can bind them like so:
+
+</p>
+<pre><code class="lang-javascript">orchestra.on({
+  playing : function() {
+    console.log(&quot;playing&quot;);
+  },
+  stopping : function() {
+    console.log(&quot;stopping&quot;);
+  }
+});</code></pre>
+<p>Is equivalent to:
+
+</p>
+<pre><code class="lang-javascript">orchestra.on(&quot;playing&quot;, function() {
+  console.log(&quot;playing&quot;);
+});
+orchestra.on(&quot;stopping&quot;, function() {
+  console.log(&quot;stopping&quot;);
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="8">
+        <div>
+          <h2>Unbinding an Event</h2>
+<p>The event unbinding signature is:
+
+</p>
+<pre><code class="lang-javascript">off(eventName, [callback], [context])</code></pre>
+<p>This unbinds all <code>customEvent</code> handlers on <code>myObject</code>:
+
+</p>
+<pre><code class="lang-javascript">myObject.off(&quot;customEvent&quot;);</code></pre>
+<p>This unbinds all <code>customEvent</code> handlers with the same callback:
+
+</p>
+<pre><code class="lang-javascript">myObject.off(&quot;customEvent&quot;, callback);</code></pre>
+<p>This unbinds all <code>customEvent</code> handlers with the same callback and context:
+
+</p>
+<pre><code class="lang-javascript">myObject.off(&quot;customEvent&quot;, callback, context);</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="9">
+        <div>
+          <h2>Binding an Event Once</h2>
+<p>If you need to have a callback fire only once,
+you can use the built in <code>once</code> method:
+
+</p>
+<pre><code class="lang-javascript">object.once(event, callback, [context])</code></pre>
+<p>For example:
+
+</p>
+<pre><code class="lang-javascript">
+var counter = 1;
+
+myObject.once(&quot;epic&quot;, function() {
+  counter += 1;
+});
+
+myObject.trigger(&quot;epic&quot;);
+myObject.trigger(&quot;epic&quot;);
+
+// counter === 2</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="10">
+        <div>
+          <h2>Inversion of Control</h2>
+<p>Using the <code>on</code> method, means that the object calling it
+needs to keep track of all the bound events so that it can
+clean them up later (when it gets destroyed, for example.)
+
+</p>
+<p>We can now use the <code>listenTo</code> api to allow the calling object
+to directly keep track of the events being bound.
+
+</p>
+<pre><code class="lang-javascript">house.listenTo(door, &quot;open&quot;, function() {
+  console.log(&quot;a door was opened&quot;);
+});</code></pre>
+<p>To remove any events that are being listened to, just call
+<code>stopListening</code> like so:
+
+</p>
+<pre><code class="lang-javascript">house.stopListening();</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="11">
+        <div>
+          <h2>Triggering Events</h2>
+<p>The event triggering signature is:
+
+</p>
+<pre><code class="lang-javascript">trigger(eventName, [data, ...])</code></pre>
+<p>This triggers the event, which dispatchs the provided data (if any) to all
+bound handlers.
+
+</p>
+<pre><code class="lang-javascript">myObject.trigger(&quot;customEvent&quot;, data);</code></pre>
+<p>The data passed directly maps to the function arguments inside each bound
+function.
+
+</p>
+<p>You can pass lots of parameters like so:
+
+</p>
+<pre><code class="lang-javascript">myObject.trigger(&quot;customEvent&quot;, var1, var2, var3);</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="12">
+        <div>
+          <h2>Binding &amp; Triggering Example</h2>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// Create a random object
+var obj = {};
+
+// Extend it to have Backbone.Event&#39;s functionality
+_.extend(obj, Backbone.Events);
+
+// Bind to a custom event
+obj.on(&quot;saySomething&quot;, function(msg) {
+  console.log(msg);
+});
+
+obj.on(&quot;sayTwoThings&quot;, function(msg1, msg2) {
+  console.log(msg1, msg2);
+});
+
+// Trigger that event with a custom parameter
+obj.trigger(&quot;saySomething&quot;, &quot;Hi there!&quot;);
+obj.trigger(&quot;sayTwoThings&quot;, &quot;My Name is&quot;, &quot;Irene Ros&quot;);</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="13">
+        <div>
+          <h2> Binding & Triggering Example Inversion of Control </h2>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// Create a random object
+var orchestra = { instruments : 0 }, violin = {}, flute = {};
+
+// Extend it to have Backbone.Event's functionality
+_.extend(orchestra, Backbone.Events);
+_.extend(violin, Backbone.Events);
+_.extend(flute, Backbone.Events);
+
+var onPlaying = function(type) {
+  orchestra.instruments += 1;
+  console.log(type + " Playing");
+  if (orchestra.instruments === 2) {
+    orchestra.trigger("complete");
+  }
+};
+
+orchestra.listenTo(violin, "playing", function() {
+  onPlaying("Violin");
+});
+
+orchestra.listenTo(flute, "playing", function() {
+  onPlaying("Flute");
+});
+
+orchestra.on("complete", function() {
+  console.log("All instruments are playing!");
+});
+
+violin.trigger("playing");
+flute.trigger("playing");</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="14">
+        <div>
+          <h2>Context</h2>
+<p>When working with events, you may find yourself needing control over specific
+objects that are related to the events.  A good example is a Model tied to a
+View.
+
+</p>
+<pre><code class="lang-javascript">Backbone.View.extend({
+  initialize: function() {
+    this.model.on(&quot;change&quot;, this.render, this);
+  }
+});</code></pre>
+<p>Even though we are binding to the Model&#39;s change event, the event itself is
+context aware of the View.  This allows us to specifically unbind this events
+from the model related to this View later on.
+
+</p>
+<pre><code class="lang-javascript">Backbone.View.extend({
+  cleanup: function() {
+    this.model.off(&quot;change&quot;, null, this);
+  }
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="15">
+        <div>
+          <h2>Context</h2>
+<p>When using <code>listenTo</code> you do not have the option to pass a context.
+
+</p>
+<p>By default the context is the object that is listening:
+
+</p>
+<pre><code class="lang-javascript">orchestra.listenTo(violin, &quot;playing&quot;, function() {
+  console.log(this); // this is the orchestra object
+  onPlaying(&quot;Violin&quot;);
+});</code></pre>
+<p>To resolve this, you could use bind:
+
+</p>
+<pre><code class="lang-javascript">orchestra.listenTo(violin, &quot;playing&quot;, _.bind(
+  function() {
+    console.log(this); // this is the violin object
+    onPlaying(&quot;Violin&quot;);
+  }, violin)
+);</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="16">
+        <div>
+          <h2>Comfortable</h2>
+<p>When designing your Backbone application you should think about events early
+on and use them frequently whenever you are working with asynchronous
+operations.
+
+</p>
+<p>Like all good design decisions you should evaluate if a specific situation
+warrants an event.  You may find excessive events clouds the overall vision
+of the architectural flow.
+</p>
+
+        </div>
+      </section>
+
+      
+
+    </article>
+
+    <script src="resources/backbone/jquery.js"></script>
+    <script>window.jquery || document.write('<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.6.1.min.js">\x3c/script>')</script>
+
+    <!-- deck core and extensions -->
+    <script src="resources/deck.js/core/deck.core.js"></script>
+    <script src="resources/deck.js/extensions/menu/deck.menu.js"></script>
+    <script src="resources/deck.js/extensions/goto/deck.goto.js"></script>
+    <script src="resources/deck.js/extensions/status/deck.status.js"></script>
+    <script src="resources/deck.js/extensions/navigation/deck.navigation.js"></script>
+    <script src="resources/deck.js/extensions/hash/deck.hash.js"></script>
+
+    <!-- include the base codemirror code. -->
+    <script src="resources/deck.js/extensions/codemirror/codemirror.js"></script>
+
+    <!-- include the code syntax you want to highlight -->
+    <!-- javascript -->
+    <script src="resources/deck.js/extensions/codemirror/mode/javascript/javascript.js"></script>
+
+    <!-- html mode : note code miror requires xml, css and javasript modes for html rendering -->
+    <script src="resources/deck.js/extensions/codemirror/mode/xml/xml.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/css/css.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+
+    <script src="resources/deck.js/extensions/codemirror/deck.codemirror.js"></script>
+    <script src="resources/backbone/highlight.pack.js"></script>
+
+    <!-- Backbone resources -->
+    <script src="resources/backbone/lodash.js"></script>
+    <script src="resources/backbone/backbone.js"></script>
+
+    <!-- Stuff specific to this page -->
+    <script src="resources/slides.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>

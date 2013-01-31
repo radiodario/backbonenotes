@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title>Backbone Training :: Models</title>
+  
+  <meta name="description" content="Models">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+  
+  <!-- Core and extension CSS files -->
+  <link rel="stylesheet" href="resources/deck.js/core/deck.core.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/status/deck.status.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/hash/deck.hash.css">
+  <link rel="stylesheet" href="resources/highlightJS/github.css">
+
+  <!-- include code mirror default css and the theme you want. -->
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/deck.codemirror.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/themes/default.css">
+
+  <!-- Theme CSS files (menu swaps these out) -->
+  <link rel="stylesheet" id="transition-theme-link" href="resources/deck.js/themes/transition/fade.css">
+  
+  <link rel="stylesheet" href="resources/slides.css"> 
+  
+  <script src="resources/modernizr.custom.js"></script>
+</head>
+
+<body>
+    
+    <article class="deck-container">
+
+      <section class="slide" id="1">
+        <div>
+          <h1> Section #5 - Views</h1>
+          <h3>
+            Bocoup Backbone.js Training
+          </h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="2">
+        <div>
+          <h2>What can trigger a view update?</h2>
+<ul>
+  <li class="slide"><h3>A User Action</h3></li>
+  <li class="slide"><h3>A Data Update from the Server</h3></li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="3">
+        <div>
+          <h2>What can trigger a view update? - A User Action</h2>
+<p>Imagine that clicking on the &quot;Clear&quot; button clears the user list we just saw.
+
+</p>
+<h3>User List:</h3>
+<button id="refresh_userlist">Clear</button>
+
+<ul id="userlist">
+  <li>Alice</li>
+</ul>
+
+<textarea id="code_useraction" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// bind to a click on the button
+$(&#39;#refresh_userlist&#39;).click(function(event) {
+
+  // clear user list by removing all its children.
+  $(&#39;#userlist li&#39;).remove();
+
+});
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="4">
+        <div>
+          <script type="codemirror" data-selector="#code_serveraction">
+$.ajaxTransport('+*', function(options, originalOptions, jqXHR) {
+  return {
+    send: function(headers, completeCallback) {
+      completeCallback(200, "OK", {
+        data : [{ id : 1, name : "Joe"},{ id : 2, name : "Mike"}]
+      });
+    },
+    abort: function() {}
+  };
+});
+</script><h2>What can trigger a view update? - Incoming Server Data</h2>
+<p>Assume the server had some data. It looks like this: <br>
+</p>
+<pre><code>[{ id : 1, name : &quot;Joe&quot;},{ id : 2, name : &quot;Mike&quot;}]</code></pre>
+<textarea id="code_serveraction" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+
+$.ajax({ 
+  url : &quot;myserver.com/users&quot;, 
+  success : function(data, textStatus) {
+
+    // Find your dom element
+    var userlist = $(&#39;ul#userlist&#39;);
+
+    // Add each user as an item in the list.
+    _.each(data, function(user) {
+      $(&#39;<li>&#39;, {
+        text : user.name
+      }).appendTo(userlist);
+    });
+  }
+});
+</textarea>
+
+<h3>User List:</h3>
+<ul id="userlist">
+  <li>Alice</li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="5">
+        <div>
+          <h2>Why are those not good ways to do that?</h2>
+<p>A few things:
+
+</p>
+<ul class="largest">
+  <li class="slide">&quot;Userlist&quot; not treated as component.</li>
+  <li class="slide">Loading/Clearing logic separate in code.</li>
+  <li class="slide">Returning data not reusable.</li>
+  <li class="slide">Multiple actions would all be in same callback.</li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="6">
+        <div>
+          <h2>Creating</h2>
+<p>The definition of a View.
+
+</p>
+<pre><code class="lang-javascript">var View = Backbone.View.extend({
+
+});</code></pre>
+<p>The initialization of a View.
+
+</p>
+<pre><code class="lang-javascript">var view = new View();</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="7">
+        <div>
+          <h2>What&#39;s a view?</h2>
+<h3>Let&#39;s take this Balsamiq mockup of a YouTube like product:</h3>
+<p><img class="mytube" src="Support/050.myTube.png">
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="8">
+        <div>
+          <h2>What&#39;s a view?</h2>
+<p><img class="mytube" src="Support/050.myTube0.png"></p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="9">
+        <div>
+          <h2>What&#39;s a view?</h2>
+<p><img class="mytube" src="Support/050.myTube1.png"></p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="10">
+        <div>
+          <h2>What&#39;s a view?</h2>
+<p><img class="mytube" src="Support/050.myTube2.png"></p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="11">
+        <div>
+          <h2>What&#39;s a view?</h2>
+<p><img class="mytube" src="Support/050.myTube3.png"></p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="12">
+        <div>
+          <h2>What&#39;s a view?</h2>
+<p>Thinking about the Related Video List we would have:
+
+</p>
+<div class="larger">
+<li class="slide"> A <code>Video</code> module </li>
+<li class="slide"> That would have a <code>Views</code> property: <code>Video.Views</code> </li>
+<li class="slide"> There would be a <code>RelatedVideoList</code> View for the whole list, and/or </li>
+<li class="slide"> There would be a <code>RelatedVideoListItem</code> View for each item </li>
+</div>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="13">
+        <div>
+          <h2>What&#39;s a View?</h2>
+<p>Based on these views, we might need the following model and collection:
+
+</p>
+<ul>
+  <li class="slide">
+    <code>Video.RelatedVideo</code> - A <em>model</em> that contains a related video to the currently viewed video.
+    <br>
+    An API call might look like:
+    <br>
+    <code>http://mytube.com/video/4/related/6</code>
+  </li>
+  <li class="slide">
+    <code>Video.RelatedVideos</code> - A <em>collection</em> that contains related videos to a specific video.
+    <br>
+    An API call might look like:
+    <br>
+    <code>http://mytube.com/video/4/related</code>
+  </li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="14">
+        <div>
+          <h2>Element</h2>
+<p>Every Backbone.View by default has an associated DOM Element.  This is
+typically created by Backbone automatically during initialization.
+
+</p>
+<pre><code class="lang-javascript">var myView = new Backbone.View();
+
+console.log(myView.el);  // just dom element
+console.log(myView.$el); // jQuery/zepto wrapped.</code></pre>
+<p>You can attach to an existing view like so:
+
+</p>
+<pre><code class="lang-javascript">var myView = new Backbone.View({
+  el : &#39;#selector&#39;
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="15">
+        <div>
+          <h2>Element</h2>
+<p>Don&#39;t do this though:
+
+</p>
+<pre><code class="lang-javascript">var myView = new Backbone.View({
+  el : $(&#39;#selector&#39;)
+});</code></pre>
+<p>The jQuery selector will be evaluated before the View is created, and might
+not be available unless you&#39;re in a DOM Ready state.</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="16">
+        <div>
+          <h2>New element vs Existing element</h2>
+<h3>You <em>may</em> want to use an <b>existing</b> DOM element if the answer is yes to any of the following questions:</h3>
+<ul class="larger">
+  <li class="slide">
+    Is this an element I&#39;m only going to paint once?
+  </li>
+  <li class="slide">
+    Is this an element that contains other elements?
+  </li>
+  <li class="slide">
+    Is this an element I am going to be updating a lot?
+  </li>
+  <li class="slide">
+    Is it organizational and not really tied to data?
+  </li>
+</ul>
+
+<p><h3 class="slide"><strong>You <em>may</em> want to create <b>new</b> DOM elements if the answer is yes
+  to any of the following questions:</strong></h3>
+</p>
+<ul class="larger"><br>  <li class="slide">
+    Is it tied to a model/collection?
+  </li>
+  <li class="slide">
+    Is this an element that&#39;s going to be painted in many places?
+  </li>
+  <li class="slide">
+    Is this an element that&#39;s a part of a list?
+  </li>
+</ul>
+
+<p class="larger slide">
+  Note that these are <strong>not</strong> rules, but things to think about.
+</p>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="17">
+        <div>
+          <h2>Passing Data</h2>
+<p>How does one bind a <code>model</code> or a <code>collection</code> instance to a view?
+In one of the following ways:
+
+</p>
+<pre><code class="lang-javascript">var listItem = new MyListItem({ name : &#39;someName&#39; });
+var list = new  MyList([listItem]);
+
+var listView = new MyListView({
+  collection : list
+});
+
+var listItemView = new MyListItemView({
+  model : listItem
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="18">
+        <div>
+          <h2>DOM Events</h2>
+<p>Attaching a DOM event to your View is accomplished by specifying an event
+and/or selector plus a callback inside the events object.
+
+</p>
+<pre><code class="lang-javascript">var MyView = Backbone.View.extend({
+  events: {
+    &quot;click&quot;: &quot;handleClick&quot;,
+    &quot;hover .some-selector&quot;: &quot;handleHover&quot;
+  }
+});</code></pre>
+<p>The callback has a single argument which is the event passed from jQuery.  The <code>this</code> context is set to the View.
+
+</p>
+<pre><code class="lang-javascript">var MyView = Backbone.View.extend({
+  handleClick: function(evt) {
+
+  }
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="19">
+        <div>
+          <h2>Where should events be defined?</h2>
+<p class="slide largest">
+  If your event is <em>modifying the model or collection</em>, define it on the view that
+  corresponds to the model or collection.
+</p>
+<p class="slide largest">
+  If your event is <strong>NOT</strong> <em>modifying the model/collection</em>, 
+  define it on the highest level container you can and catch the 
+  <code>event.target</code>.
+</p>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="20">
+        <div>
+          <h2>Render method</h2>
+<p>The default <code>render</code> method is just passing through a reference
+to the context like so:
+
+</p>
+<pre><code class="lang-javascript"> render: function() {
+  return this;
+}</code></pre>
+<p>When you overwrite it to do your rendering work, be sure to
+return <code>this</code> as well. 
+A common pattern is to render views inside of views that own them:
+
+</p>
+<pre><code class="lang-javascript">var ListView = Backbone.View.extend({
+
+  render : function() {
+    this.collection.each(function(item) {
+      this.$el.append(new ListItemView({ 
+        model : item 
+      }));
+    });
+  }
+
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="21">
+        <div>
+          <h2>Render</h2>
+<h3>User List:</h3>
+<textarea id="code_serveraction" name="code" class="code" mode="javascript" style="display: none;">
+var ListItem = Backbone.Model.extend({});
+var ListItemCollection = Backbone.Collection.extend({
+  model : ListItem
+});
+var ListItemView = Backbone.View.extend({
+  model : ListItem,
+  tag : &#39;li&#39;,
+  render : function() {
+    this.$el.html(this.model.get(&quot;content&quot;));
+    return this;
+  }
+});
+var ListView = Backbone.View.extend({
+  collection : ListItemCollection,
+  render : function() {
+    this.collection.each(function(item) {
+      var item = new ListItemView({ model : item });
+      this.$el.append(item.render().el);
+    }, this);
+    return this;
+  }
+});
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="22">
+        <div>
+          <script type="codemirror" data-selector="#code_renderexample">
+var ListItem = Backbone.Model.extend({});
+var ListItemCollection = Backbone.Collection.extend({
+  model : ListItem
+});
+var ListItemView = Backbone.View.extend({
+  model : ListItem,
+  tag : 'li',
+  render : function() {
+    this.$el.html(this.model.get("content"));
+    return this;
+  }
+});
+var ListView = Backbone.View.extend({
+  collection : ListItemCollection,
+  render : function() {
+    this.collection.each(function(item) {
+      var item = new ListItemView({ model : item });
+      this.$el.append(item.render().el);
+    }, this);
+    return this;
+  }
+});
+</script><h2>Render</h2>
+<h3>User List:</h3>
+<ul id="userListContainer"></ul>
+
+<textarea id="code_renderexample" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// make new collection
+var c = new ListItemCollection([
+  new ListItem({ content : &quot;List item 1&quot;}),
+  new ListItem({ content : &quot;List item 2&quot;}),
+]);
+var cView = new ListView({ 
+  el : &#39;#userListContainer&#39;,
+  collection : c
+});
+cView.render();
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="23">
+        <div>
+          <h2>Templates</h2>
+<p>There are two parts of templating on the client side.  Fetching the template
+and then rendering.
+
+</p>
+<p>Defining a template is conventionally done with a template property.
+
+</p>
+<pre><code class="lang-javascript">Backbone.View.extend({
+  template: _.template(&quot;&lt;%= var %&gt;&quot;)
+});</code></pre>
+<p>Then rendered by the View into its internal element.
+
+</p>
+<pre><code class="lang-javascript">Backbone.View.extend({
+  render: function() {
+    var markup = this.template(this.model.toJSON());
+    this.$el.html(markup);
+
+    return this;
+  }
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="24">
+        <div>
+          <h2>Where Do Templates Come from?</h2>
+<div class="slide">
+
+<h3>1. Just strings:</h3>
+
+<pre><code>Backbone.View.extend({
+  template: _.template(&quot;&lt;%= var %&gt;&quot;)
+})</code></pre>
+
+</div>
+
+<div class="slide">
+
+<h3>2. Script tags:</h3>
+
+<p>
+<pre>&lt;script type=&quot;text/template&quot; id=&quot;viewtemplate&quot;&gt;<br/>  &lt;li&gt;My name is &lt;%= name %&gt;&lt;/li&gt;<br/>&lt;/script&gt;</pre>
+</p>
+<p>
+<pre>
+Backbone.View.extend({<br/>  template: _.template($(&#39;#view_template&#39;).html())<br/>})
+</pre>
+</p>
+</div>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="25">
+        <div>
+          <h2>Where Do Templates Come from?</h2>
+<h3>3. From the server/precompiled:</h3>
+
+<p>Store them as individual files on your server in a specific directory:
+</p>
+<pre><code>app
+  modules
+    photo.js
+  templates
+    photo
+      show.html
+      list.html</code></pre>
+<p>Here&#39;s what a template might look like:
+
+</p>
+<pre><code class="lang-html">&lt;div class=&quot;detail&quot;&gt;
+  &lt;img src=&quot;&lt;%= photo.get(&quot;data&quot;) %&gt;&quot;&gt;
+  &lt;div class=&quot;delete&quot;&gt; 
+    &lt;button class=&quot;btn&quot;&gt;delete photo&lt;/button&gt; 
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="26">
+        <div>
+          <h2>Where Do Templates Come from?</h2>
+<p>When defining a view, give it the template path:
+
+</p>
+<pre><code class="lang-javascript">Backbone.View.extend({
+  template : &quot;templates/photo/show&quot;
+});</code></pre>
+<p>On initialization check if template is cached in a global
+object, if not fetch it from server:
+
+</p>
+<pre><code class="lang-javascript">path = path + &quot;.html&quot;;
+
+if (!JST[path]) {
+  $.ajax({ url: app.root + path, async: false }).then(function(contents) {
+    JST[path] = _.template(contents);
+  });
+} 
+
+return JST[path];</code></pre>
+<p>Backbone Boilerplate does this for you, but it&#39;s a neat trick.
+
+</p>
+<p>Grunt.js supports building all templates into a single namespace file, so that they are precompiled and available in production.</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="27">
+        <div>
+          <h2>Auto Updating</h2>
+<p>Useful when dealing with asynchronous data and to keep the UI synchronized.
+
+</p>
+<p>Whenever the View&#39;s model changes, re-render the View.
+
+</p>
+<pre><code class="lang-javascript">initialize: function() {
+  this.listenTo(this.model, &quot;change&quot;, this.render);
+}</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="28">
+        <div>
+          <h2>Auto Updating</h2>
+<p>If you don&#39;t want to re-render every time, define an update
+method that will only update required data:
+
+
+</p>
+<pre><code class="lang-javascript">var MyView = Backbone.View.extend({
+  initialize: function() {
+    this.listenTo(this.model, &quot;change&quot;, this.update);
+  },
+  update : function() {
+    this.$el.find(&#39;.name&#39;).html(this.model.get(&#39;name&#39;));
+  }
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="29">
+        <div>
+          <h2>Cleaning</h2>
+<p>Whenever you assign an interval, timeout, event, etc. inside your View you
+should take care to clean up once it is removed.
+
+</p>
+<p>One method to clean is to patch the remove method.
+
+</p>
+<pre><code class="lang-javascript">remove: function() {
+
+  // Add cleanup code here 
+  // example: unbind events!
+  this.model.unbind(&quot;change:name&quot;, this.update);
+
+  // always call default remove method in the end.
+  return Backbone.View.prototype.remove.apply(this, arguments);
+}</code></pre>
+<p>When you call <code>view.remove()</code> it will unbind all events bound using <code>listenTo</code>.
+</p>
+
+        </div>
+      </section>
+
+      
+
+    </article>
+
+    <script src="resources/backbone/jquery.js"></script>
+    <script>window.jquery || document.write('<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.6.1.min.js">\x3c/script>')</script>
+
+    <!-- deck core and extensions -->
+    <script src="resources/deck.js/core/deck.core.js"></script>
+    <script src="resources/deck.js/extensions/menu/deck.menu.js"></script>
+    <script src="resources/deck.js/extensions/goto/deck.goto.js"></script>
+    <script src="resources/deck.js/extensions/status/deck.status.js"></script>
+    <script src="resources/deck.js/extensions/navigation/deck.navigation.js"></script>
+    <script src="resources/deck.js/extensions/hash/deck.hash.js"></script>
+
+    <!-- include the base codemirror code. -->
+    <script src="resources/deck.js/extensions/codemirror/codemirror.js"></script>
+
+    <!-- include the code syntax you want to highlight -->
+    <!-- javascript -->
+    <script src="resources/deck.js/extensions/codemirror/mode/javascript/javascript.js"></script>
+
+    <!-- html mode : note code miror requires xml, css and javasript modes for html rendering -->
+    <script src="resources/deck.js/extensions/codemirror/mode/xml/xml.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/css/css.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+
+    <script src="resources/deck.js/extensions/codemirror/deck.codemirror.js"></script>
+    <script src="resources/backbone/highlight.pack.js"></script>
+
+    <!-- Backbone resources -->
+    <script src="resources/backbone/lodash.js"></script>
+    <script src="resources/backbone/backbone.js"></script>
+
+    <!-- Stuff specific to this page -->
+    <script src="resources/slides.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Backbone Training - Router</title>
+  <link href='http://fonts.googleapis.com/css?family=Quicksand:700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body>
+  <h1>Backbone Training - 3rd Party API Examples</h1>
+  <div id="content">
+    <script src="https://gist.github.com/1362528.js?file=twitterAjax.js"></script>
+    <div id="response">
+      Response will go here...
+    </div>
+  </div>
+  
+  <!-- Load libraries -->
+  <script src="../resources/backbone/jquery.js"></script>
+  <script src="../resources/backbone/underscore.js"></script>
+  <script src="../resources/backbone/backbone.js"></script>
+
+  <script type="text/javascript">
+    function handleResponse(r) {
+      console.log(r);
+      $('div#response').html(JSON.stringify(r));
+    }
+    $(function() {
+      $.ajax({ 
+        url : "http://search.twitter.com/search.json?q=cats", 
+        dataType: "jsonp",
+        jsonpCallback : "handleResponse"
+      });
+    });
+  </script>
+  
+</body>
+</html>

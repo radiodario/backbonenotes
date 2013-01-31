@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title>Backbone Training :: Models</title>
+  
+  <meta name="description" content="Models">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+  
+  <!-- Core and extension CSS files -->
+  <link rel="stylesheet" href="resources/deck.js/core/deck.core.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/status/deck.status.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/hash/deck.hash.css">
+  <link rel="stylesheet" href="resources/highlightJS/github.css">
+
+  <!-- include code mirror default css and the theme you want. -->
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/deck.codemirror.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/themes/default.css">
+
+  <!-- Theme CSS files (menu swaps these out) -->
+  <link rel="stylesheet" id="transition-theme-link" href="resources/deck.js/themes/transition/fade.css">
+  
+  <link rel="stylesheet" href="resources/slides.css"> 
+  
+  <script src="resources/modernizr.custom.js"></script>
+</head>
+
+<body>
+    
+    <article class="deck-container">
+
+      <section class="slide" id="1">
+        <div>
+          <h1> Section #6 - Routers</h1>
+          <h3>
+            Bocoup Backbone.js Training
+          </h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="2">
+        <div>
+          <h2>Creating</h2>
+<p>Defining a Router.
+
+</p>
+<pre><code class="lang-javascript">var Router = Backbone.Router.extend({
+
+});</code></pre>
+<p>Initializing a new Router.
+
+</p>
+<pre><code class="lang-javascript">var router = new Router();</code></pre>
+<p>You can overwrite the root url like so:
+
+</p>
+<pre><code class="lang-javascript">{ root: &quot;/animals&quot; }</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="3">
+        <div>
+          <h2>Routes</h2>
+<p>You add routes by creating entries in the routes object during definition.
+
+</p>
+<pre><code class="lang-javascript">Backbone.Router.extend({
+  routes: {
+    &quot;&quot;: &quot;index&quot; // or &quot;*other&quot;
+  },
+
+  index : function() {
+    // What should happen when this route is triggered?
+  }
+});</code></pre>
+<p>Never use a leading slash in your routes, since the fragments will not match up
+if you decide to use pushState with hash fallback.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="4">
+        <div>
+          <textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">
+var ApplicationRouter = Backbone.Router.extend({
+  routes : {
+    // define what callback will be dispatched when we 
+    // navigate to /about.
+    &quot;about&quot; : &quot;about&quot; 
+  },
+
+  // define the callback to be dispatched when the
+  // url changes based on the route we defined
+  // for this callback.
+  about : function() {
+    alert(&quot;Hi there, I&#39;m the about page!&quot;);
+  }
+});
+
+// Initialize a new router
+var router = new ApplicationRouter();
+
+// Indicate Backbone should keep track of your url history.
+// This will enable the back button to work for you.
+Backbone.history.start();</textarea>
+
+<h3><a href="Support/070.router_01.html">070.router_01.html</a></h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="5">
+        <div>
+          <h2>Params</h2>
+<p>Routes defined in a Router can have a combination of params and splats to
+allow for variable URL matching.
+
+</p>
+<p>Params are useful for single values that do not contain forward slashes.  These
+are denoted with a leading colon.
+
+</p>
+<pre><code class="lang-javascript">routes: {
+  &quot;user/:id&quot;: &quot;handleId&quot;
+},
+handleId : function(id) {}</code></pre>
+<p>Splats are useful for getting all data, including forward slashes.
+
+</p>
+<pre><code class="lang-javascript">routes: {
+  &quot;user/*repo&quot;: &quot;handleRepo&quot;
+},
+handleRepo : function(repo) {
+  // you&#39;ll have to parse your repo param here
+}</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="6">
+        <div>
+          <textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">
+var ApplicationRouter = Backbone.Router.extend({
+  routes : {
+    // define what callback will be dispatched when we 
+    // navigate to /about.
+    &quot;about/:name&quot; : &quot;about&quot;,
+    &quot;search/*query&quot; : &quot;search&quot; 
+  },
+
+  // define the callback to be dispatched when the
+  // url changes based on the route we defined
+  // for this callback.
+  about : function(name) {
+    alert(&quot;Hi there, my name is: &quot; + name);
+  },
+
+  search: function(query) {
+    alert(&quot;You searched for: &quot; + query);
+  }
+});</textarea>
+
+
+ <h3><a href="Support/070.router_03.html">070.router_03.html</a></h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="7">
+        <div>
+          <h2>Navigation</h2>
+<p>To manually trigger router navigation, you call the navigate function with a
+route.
+
+</p>
+<pre><code class="lang-javascript">router.navigate(&quot;some/route&quot;, { trigger : true });</code></pre>
+<p>The second argument dictates whether or not the route callback should be
+triggered.  The default is to silently ignore the callback.
+
+</p>
+<p>To update the URL without creating an entry in the browser&#39;s history, set the <code>replace</code> flag to true:
+
+</p>
+<pre><code class="lang-javascript">router.navigate(&quot;some/route&quot;, { replace : true });</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="8">
+        <div>
+          <h2>Events</h2>
+<p>Routers emit a single event, <code>route</code>.  This is only useful to tell
+if a route has been triggered.  Many routes will contain async
+behaviors, and the event will trigger after the route callback has
+fired, but before all the async callbacks have fired.
+
+</p>
+<p>Match any routes that have been triggered:
+
+</p>
+<pre><code class="lang-javascript">router.on(&quot;route&quot;, function(name) {
+
+});</code></pre>
+<p>Match a specific route that has been triggered:
+
+</p>
+<pre><code class="lang-javascript">route.on(&quot;route:myroute&quot;, function(name) {
+
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="9">
+        <div>
+          <h2>When should one make routes?</h2>
+<div class="slide">
+  <h3>You should make routes for:</h3>
+  <div class="larger">Behavior that changes the current UI</div>
+</div>
+<br /><br />
+<div class="slide">
+  <h3>You should NOT make routes for:</h3>
+  <div class="larger">Actions that modify the state of your data on the server (or fetch models/collections.)</div>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">// Not a good idea
+UserRouter = Backbone.Router.extend({
+  routes: {
+    &quot;users/:id/remove&quot;: &quot;remove&quot;
+  },
+  remove: function( id ) {
+    var user = usersCollection.get( id );
+    if (user &amp;&amp; confirm(&quot;Are you sure you want to remove &quot; + 
+      user.get(&quot;name&quot;) + &quot;?&quot;)) {
+      user.destroy();
+    }
+  }
+});</textarea>
+</div>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="10">
+        <div>
+          <h2>Bookmarkable URLs</h2>
+<p class="larger">
+  One thing to remember, is that enabling pushState allows you to
+  prevent regular urls from going to the server if state for those has
+  been saved, HOWEVER, if someone just bookmarks a url and comes to it - 
+  it will hit your server.
+</p>
+<ul class="larger">
+  <li class="slide">I go to: <code>myServer.com</code></li>
+  <li class="slide">I browse around the app, eventually making it to:
+     <code>myServer.com/animals/cats/enemies/dogs</code>
+  </li>
+  <li class="slide">I bookmark this url.</li>
+  <li class="slide">I return in a week to just the above url</li>
+</ul>
+<p class="larger slide">
+  The first time, there was a router action trigger, that fetched some json
+  and rendered the <code>AnimalEnemyView</code> for a <code>Dog</code> 
+  model (for example.)
+  <br>
+  The second time, it went straight to the server!
+</p>
+<p class="slide largest">
+  Any route that is bookmarkable should be able to render without the need for any prior routes to be run.
+</p>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="11">
+        <div>
+          <h2>Bootstrapping</h2>
+<p>If someone navigates to a bookmarkable url you need to ensure two things:
+
+</p>
+<ul>
+  <li class="slide">
+    <b>You load all the data they are expecting.</b></br>
+    Do this by defining an <code>initialize</code> method on your router:
+
+    <pre><code>var Router = Backbone.Router.extend({
+  initialize: function() {
+    this.gallery = new Photo.Collection();
+  }
+}</code></pre>
+    Note that the data is cached so that it is not loaded every time.
+  </li>
+
+  <li class="slide">
+    <b>You render all required container layout each time.</b> 
+    You can either do that in the <code>initialize</code> as well, or
+    if using Backbone Boilerplate, call <code>useLayout</code>:
+
+    <pre><code>index: function() {
+  app.useLayout(&quot;base&quot;).setViews({
+    &quot;.sidebar&quot;: new Tools.Views.SideBar(),
+    &quot;.content&quot;: new Photo.Views.Gallery({
+      collection: this.gallery
+    })
+  }).render();</code></pre>
+
+  </li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="12">
+        <div>
+          <h2>Start</h2>
+<p>Call:
+
+</p>
+<pre><code class="lang-javascript">Backbone.history.start()</code></pre>
+<p>Starts watching your application for hashChanges. Note that you need to initialize all routers before calling this!
+
+</p>
+<p>This will also fire the initial route (if you have one defined,) but you can disable that by passing <code>{ silent : true }</code>.
+
+</p>
+<p>If you are interested in using the HTML5 History API, you opt-into it like so:
+</p>
+<pre><code class="lang-javascript">Backbone.history.start({ pushState: true });</code></pre>
+<p>Overwrite the root of your application:
+
+</p>
+<pre><code class="lang-javascript">Backbone.history.start({pushState: true, root: &quot;/public/search/&quot;})</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="13">
+        <div>
+          <h2>Hash</h2>
+<p>Using hash fragments you can save state (enable back/forward buttons):
+
+</p>
+<p><a href="http://myServer.com/users/index.html#1">http://myServer.com/users/index.html#1</a>
+
+</p>
+<p>The <code>location.hash</code> method of saving state is age-old and still employed by
+many websites.  This is mostly because at the time many web applications were
+being developed, the HTML5 History API wasn&#39;t viable or the stacks that were
+chosen had no fallback strategies.
+
+</p>
+<p><a href="http://gtv-resources.googlecode.com/svn/trunk/examples/location-hash-html.html#1">Example of using hash for saving state</a>
+
+</p>
+<p>Works everywhere, without server backend.
+
+</p>
+<p>Clients do not send the server the hash fragment. For example, 
+Twitter is unable to know what page you initially landed on:
+
+</p>
+<p><a href="http://www.youtube.com/watch?v=ClGbpKuE1yU">Visible degradation of hash based navigation</a>
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="14">
+        <div>
+          <h2>History API</h2>
+<p>The HTML5 History API is a way of directly manipulating the URI in the address
+bar and retaining state for a given session.  Compatibility is ubiquitous
+amongst modern browsers.  Backbone automatically provides hash-based fallback
+for older browsers.
+
+</p>
+<p>This method is very good for bootstrapping as servers read the actual full
+address and know which page you landed on.
+
+</p>
+<p>The tricky part about the <code>pushState</code> method, is that the backend server must
+redirect all &quot;unmatched&quot; requests to the <code>index.html</code> page for client-side
+routing.
+</p>
+
+        </div>
+      </section>
+
+      
+
+    </article>
+
+    <script src="resources/backbone/jquery.js"></script>
+    <script>window.jquery || document.write('<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.6.1.min.js">\x3c/script>')</script>
+
+    <!-- deck core and extensions -->
+    <script src="resources/deck.js/core/deck.core.js"></script>
+    <script src="resources/deck.js/extensions/menu/deck.menu.js"></script>
+    <script src="resources/deck.js/extensions/goto/deck.goto.js"></script>
+    <script src="resources/deck.js/extensions/status/deck.status.js"></script>
+    <script src="resources/deck.js/extensions/navigation/deck.navigation.js"></script>
+    <script src="resources/deck.js/extensions/hash/deck.hash.js"></script>
+
+    <!-- include the base codemirror code. -->
+    <script src="resources/deck.js/extensions/codemirror/codemirror.js"></script>
+
+    <!-- include the code syntax you want to highlight -->
+    <!-- javascript -->
+    <script src="resources/deck.js/extensions/codemirror/mode/javascript/javascript.js"></script>
+
+    <!-- html mode : note code miror requires xml, css and javasript modes for html rendering -->
+    <script src="resources/deck.js/extensions/codemirror/mode/xml/xml.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/css/css.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+
+    <script src="resources/deck.js/extensions/codemirror/deck.codemirror.js"></script>
+    <script src="resources/backbone/highlight.pack.js"></script>
+
+    <!-- Backbone resources -->
+    <script src="resources/backbone/lodash.js"></script>
+    <script src="resources/backbone/backbone.js"></script>
+
+    <!-- Stuff specific to this page -->
+    <script src="resources/slides.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>

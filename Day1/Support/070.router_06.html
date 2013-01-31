@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Backbone Training - Router</title>
+  <link href='http://fonts.googleapis.com/css?family=Quicksand:700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body>
+  <h1>Backbone Training - Router Examples</h1>
+  <div id="content">
+    <a href="#hello/about">"#hello/about" - About ("#hello/about")</a>
+  </div>
+  
+  <!-- Load libraries -->
+  <script src="../resources/backbone/jquery.js"></script>
+  <script src="../resources/backbone/lodash.js"></script>
+  <script src="../resources/backbone/backbone.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+      var SubRouter = Backbone.Router.extend({
+        constructor: function() {
+          var routes = {};
+
+          // Prefix is optional, set to empty string if not passed
+          prefix = this.prefix || "";
+
+          // Allow for optionally omitting trailing /.  Since base routes do not
+          // trigger with a trailing / this is actually kind of important =)
+          if (prefix[prefix.length-1] == "/") {
+            prefix = prefix.slice(0, prefix.length-1);
+          }
+
+          // Every route needs to be prefixed
+          _.each(this.routes, function(callback, path) {
+            if (path) {
+              return routes[prefix + "/" + path] = callback;
+            }
+
+            // If the path is "" just set to prefix, this is to comply
+            // with how Backbone expects base paths to look gallery vs gallery/
+            routes[prefix] = callback;
+          });
+
+          // Must override with prefixed routes
+          this.routes = routes;
+
+          // Required to have Backbone set up routes
+          Backbone.Router.prototype.constructor.call(this);
+        }
+      });
+
+      var ApplicationRouter = SubRouter.extend({
+        prefix : "hello/",
+        routes : {
+          "about" : "about"
+        },
+        about : function() {
+          alert("Hi world!");
+        }
+      });
+      // Initialize a new router
+      var router = new ApplicationRouter();
+
+      // Indicate Backbone should keep track of your url history.
+      // This will enable the back button to work for you.
+      Backbone.history.start();
+    });
+  </script>
+  
+</body>
+</html>

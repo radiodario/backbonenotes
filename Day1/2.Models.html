@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title>Backbone Training :: Models</title>
+  
+  <meta name="description" content="Models">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+  
+  <!-- Core and extension CSS files -->
+  <link rel="stylesheet" href="resources/deck.js/core/deck.core.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/status/deck.status.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/hash/deck.hash.css">
+  <link rel="stylesheet" href="resources/highlightJS/github.css">
+
+  <!-- include code mirror default css and the theme you want. -->
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/deck.codemirror.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/themes/default.css">
+
+  <!-- Theme CSS files (menu swaps these out) -->
+  <link rel="stylesheet" id="transition-theme-link" href="resources/deck.js/themes/transition/fade.css">
+  
+  <link rel="stylesheet" href="resources/slides.css"> 
+  
+  <script src="resources/modernizr.custom.js"></script>
+</head>
+
+<body>
+    
+    <article class="deck-container">
+
+      <section class="slide" id="1">
+        <div>
+          <h1> Section #3 - Models</h1>
+          <h3>
+            Bocoup Backbone.js Training
+          </h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="2">
+        <div>
+          <h2>What is a Model?</h2>
+<p>Typically models a row or document from your data store.
+
+</p>
+<p>Represents the application domain in a normalized form that offers:
+
+</p>
+<ul>
+<li>Data manipulation</li>
+<li>REST operation</li>
+<li>Validation</li>
+<li>Evented architecture</li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="3">
+        <div>
+          <h2>Dissecting</h2>
+<p>A Model is simply a wrapper around an attributes object.
+
+</p>
+<p>This is how a Model is represented:
+
+</p>
+<pre><code class="lang-javascript">Backbone.Model
+  _changing: false
+  _pending: false
+  _previousAttributes: Object
+  attributes: Object
+  changed: Object
+  cid: &quot;c3&quot;</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="4">
+        <div>
+          <h2>Creating</h2>
+<p>Defining a Model.
+This way, you define a constructor you can use later to create instances that match this template.
+
+</p>
+<pre><code class="lang-javascript">var Task = Backbone.Model.extend({
+});</code></pre>
+<p>Initializing a new Model.
+
+</p>
+<pre><code class="lang-javascript">var washDishes = new Task();
+var walkDog = new Task({ name : &quot;Walk the Dog&quot; });</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="5">
+        <div>
+          <h2>Creating Cont.</h2>
+<p>When creating an instance the first parameter is the <code>attributes</code> of
+the model - the actual properties of your record/row etc.
+
+</p>
+<p>The second is an optional options object, that <em>doesn&#39;t</em> get saved to the record.
+
+</p>
+<p><code>new Task(attributes, options);</code>
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+Task = Backbone.Model.extend({
+  // initialize is called every time we make 
+  // a task instance
+  initialize: function(attributes, options) {
+    console.log(attributes.label);
+    console.log(this.get(&quot;label&quot;));
+    console.log(options.time);
+    console.log(this.get(&quot;time&quot;));
+    console.log(this.time);
+  }
+});
+var brush = new Task(
+  { label: &quot;Brush teeth&quot; }, 
+  { time: &quot;noon&quot; }
+);
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="6">
+        <div>
+          <h2>Adding Custom Behavior to your Model</h2>
+<p>The <code>initialize</code> function we defined previously, gets called everytime a model is initialized.
+
+</p>
+<p>We can also add our own functions:
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// Define a Task Constructor
+var Task = Backbone.Model.extend({
+  initialize : function() {
+    this.set({ done : false });
+  },
+  complete : function() {
+    this.set({ done : true });
+  }
+});
+
+// Create some Tasks
+var clean = new Task({ label : &quot;Clean My Bedroom&quot; });
+
+// Finish cleaning
+console.log(&quot;Are we done cleaning? &quot; + clean.get(&quot;done&quot;));
+clean.complete();
+console.log(&quot;Are we done cleaning? &quot; + clean.get(&quot;done&quot;));
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="7">
+        <div>
+          <h2>Defaults</h2>
+<p>Models can have default values that exist when a Model is created.  
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+var Task = Backbone.Model.extend({
+
+  // Default label should be Unknown if no label is specified
+  defaults: {
+    label: &quot;Unknown&quot;
+  }
+
+});
+
+var blank = new Task();
+
+console.log(blank.get(&quot;label&quot;));</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="8">
+        <div>
+          <h2>Defaults Cont.</h2>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// BAD - Define a Tasks Model that has a default tags array
+var Task = Backbone.Model.extend({
+  defaults: {
+    // Define a tags array
+    tags: [ &quot;work&quot; ]
+  }
+});
+
+// Create two tasks
+var billing = new Task({ label: &quot;Send Client a Bill&quot; });
+var marketing = new Task({ label: &quot;Make a Brochure&quot; });
+
+// Change one tasks tags
+billing.get(&quot;tags&quot;).push(&quot;billing&quot;);
+
+// Both tasks now have their tags containing billing!
+console.log(&quot;Billing: &quot; + billing.get(&quot;tags&quot;) 
+         + &quot; <br>marketing: &quot; + marketing.get(&quot;tags&quot;));</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="9">
+        <div>
+          <h2>Defaults Cont.</h2>
+<p>Since these values exist on the prototype chain, they are available on all Models. The problem here is that dynamic reference types will be the same for all Models.
+
+</p>
+<p>You have two options for dealing with dynamic types:
+
+</p>
+<pre><code class="lang-javascript">Backbone.Model.extend({
+
+  // turn defaults into a function that returns a new object
+  defaults: function() {
+    return {
+      ref: []
+    };
+  },
+
+  // or set during initialization
+  initialize: function() {
+    this.set(&quot;ref&quot;, []);
+  }
+})</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="10">
+        <div>
+          <h2>Getting Attributes</h2>
+<p><code>task.get(&quot;name&quot;);</code>
+
+</p>
+<p>From Backbone Source:
+
+</p>
+<pre><code class="lang-javascript">// Get the value of an attribute.
+get: function(attr) {
+  return this.attributes[attr];
+}</code></pre>
+<div class="slide">
+This is also a good place to normalize your attributes if you want to maintain their
+original state in the attributes but return something more legible to the user.
+
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+var Task = Backbone.Model.extend({
+  // Parse a date string into an actual date object.
+  get : function(attr) {
+    if ( attr === &quot;time&quot; ) {
+      return new Date(this.attributes[attr]);
+    } else {
+      return this.attributes[attr];
+    }
+  }
+});</textarea>
+</div>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="11">
+        <div>
+          <h2>Setting attributes</h2>
+<p><code>model.set(attributes, [options])</code>
+
+</p>
+<p>Unlike <code>get</code>, <code>set</code> actually does a lot more:
+</p>
+<ul>
+  <li class="slide">
+    Ensures that the properties pass through validation (we&#39;ll get to that)
+  </li>
+  <li  class="slide">
+    Sets the state of previousAttributes
+  </li>
+  <li class="slide">
+    Fires the change event
+  </li>
+</ul>
+
+<div class="slide">
+  <code>set</code> can take either a key and value pair, or a hash of attributes:
+
+  <br /><br />
+  <code>task.set(&quot;name&quot;, &quot;Walk Dog&quot;);</code>
+
+  <br />
+  OR
+
+  <br />
+  <code>task.set({ name : &quot;Walk Dog&quot;});</code>
+</div>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="12">
+        <div>
+          <h2>Validation</h2>
+<p>To provide client-side validation of your Models, you can simply define a <code>validate</code> function.
+
+</p>
+<p>This function takes in an attributes object and if there is a return value it will be treated as a validation failure, with the return value as the message.
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+User = Backbone.Model.extend({
+  validate: function(attrs, options) {
+    if (attrs.email == null) {
+      return &quot;Missing email!&quot;;
+    }
+  }
+});</textarea>
+
+<p>Validation is now only enforced before a <code>save</code> call, although
+you could pass <code>{ validate : true }</code> to a <code>set</code> call as well.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="13">
+        <div>
+          <h2>Validation Cont.</h2>
+<p>To recieve the error messages, you can bind to the <code>invalid</code> event.
+
+</p>
+<textarea name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">var User = Backbone.Model.extend({
+  validate: function(attrs, options) {
+    if (typeof attrs.email === &quot;undefined&quot;) {
+      return &quot;Missing email!&quot;;
+    }
+  }
+}); 
+
+// Create a new user. Don&#39;t assign an email.
+var larry = new User();
+
+// On error, just log it for now.
+larry.bind(&quot;invalid&quot;, function(model, msg) {
+  console.log(msg);  // &quot;Missing email!&quot;
+});
+
+// this won&#39;t trigger a validation error
+larry.set({ name : &quot;Larry David&quot; });
+// This will trigger an error
+larry.save();
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="14">
+        <div>
+          <h2><code>invalid</code> vs <code>error</code></h2>
+<p>If your model doesn&#39;t pass validation on the <em>client</em>
+you will get an <code>invalid</code> event.
+
+</p>
+<p>If your model&#39;s <code>save</code> call fails, you will get an <code>error</code>
+event.</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="15">
+        <div>
+          <h2>Identifying</h2>
+<p>In order to reference your Model within a collection, REST endpoint, DOM, etc.
+you will need to be able to identify it besides the variable instance.
+
+</p>
+<p><code>cid</code>
+
+</p>
+<ul>
+<li>Assigned by default</li>
+<li>Incremental counter to enure no duplicates during session</li>
+<li>Not persistable (unless you try really hard.)</li>
+<li>Not guaranteed consistant between sessions.</li>
+</ul>
+<p><code>id</code>
+
+</p>
+<ul>
+<li>Doesn&#39;t exist by default</li>
+<li>Assigned by your application</li>
+<li>Usually comes from the datastore&#39;s row or document id.</li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="16">
+        <div>
+          <h2>Identifying Cont.</h2>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// Define a new constructor
+var Task = Backbone.Model.extend({});
+
+// Make a few tasks
+var cook = new Task({ label : &quot;Cook Dinner&quot; });
+
+console.log(&quot;Cook.id: &quot; + cook.id); // undefined
+console.log(&quot;Cook.cid: &quot; + cook.cid); // some value
+console.log(&quot;cook.get(&#39;id&#39;): &quot; + cook.get(&#39;id&#39;)); // undefined
+console.log(&quot;cook.get(&#39;cid&#39;): &quot; + cook.get(&#39;cid&#39;)); // always undefined
+
+var clean = new Task({ id: 5, label : &quot;Clean Bedroom&quot; });
+
+console.log(&quot;clean.id: &quot; + clean.id); // 5
+console.log(&quot;clean.cid: &quot; + clean.cid); // some value
+console.log(&quot;clean.get(&#39;id&#39;): &quot; + clean.get(&#39;id&#39;)); // 5
+console.log(&quot;clean.get(&#39;cid&#39;): &quot; + clean.get(&#39;cid&#39;)); // always undefined
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="17">
+        <div>
+          <h2>idAttribute</h2>
+<p>Sometimes your server unique identifier is not called <code>id.</code> That&#39;s ok. 
+For example, what if your id column is called <code>uid</code>?
+
+</p>
+<p>You can tell Backbone what your id attribute name is by setting <code>idAttribute</code> to that name. 
+</p>
+<div>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// Overwrite our default idAttribute to be called uid
+var Task = Backbone.Model.extend({
+  idAttribute: &quot;uid&quot;,
+});
+
+task = new Task({ uid: 10 });
+
+// Will return correct id (note we&#39;re still calling .id):
+console.log(&quot;task.id: &quot; + task.id);
+console.log(&quot;task.get(&#39;uid&#39;):&quot; + task.get(&#39;uid&#39;));
+
+// Is actually not going to work! 
+console.log(&quot;task.get(&#39;id&#39;): &quot; + task.get(&#39;id&#39;));
+</textarea>
+</div>
+
+<div class="slide larger">Just call <code>.id</code> and <code>.cid</code> without using <code>.get()</code>.</div>
+
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="18">
+        <div>
+          <h2>Binding Model to the Server</h2>
+<p>Each model has the following functions that are equivalent to those REST API we were talking about:
+
+</p>
+<ul>
+<li><code>task.save()    =&gt; POST, PUT</code></li>
+<li><code>task.destroy() =&gt; DELETE</code></li>
+<li><code>task.fetch()   =&gt; GET</code></li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="19">
+        <div>
+          <h2>Binding to Server Cont.</h2>
+<p>Models have two properties that connect your model to the api:
+
+</p>
+<ul>
+<li><code>url</code></li>
+<li><code>urlRoot</code></li>
+</ul>
+<p><code>url</code> can be static:
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+var Task = Backbone.Model.extend({
+  url: &quot;tasks&quot;
+});
+</textarea>
+<br />
+<code>url</code> can also be a function:
+
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+var Task = Backbone.Model.extend({
+  url: function() {
+    return &quot;/api/task/&quot; + this.id;
+  }
+});
+</textarea>
+
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="20">
+        <div>
+          <h2>Fetching</h2>
+<p>Models can be populated during initialization or with the set method, but in
+order to get data from a server into a Model, it must be fetched.
+
+</p>
+<pre><code class="lang-javascript">model.fetch();</code></pre>
+<p>This is an asynchronous operation since the client needs to make an AJAX
+request to fetch the data. So this will fail:
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">var Task = Backbone.Model.extend({
+  urlRoot: &quot;/api/task/&quot;
+});
+
+// Server data looks like this: 
+// { id : 4, label : &quot;Clean Bedroom&quot; }
+var clean = new Task({ id : 4 });
+clean.fetch();
+console.log(clean.get(&quot;label&quot;)); // undefined! </textarea>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="21">
+        <div>
+          <h2>Fetching Cont.</h2>
+<p>There are several ways to handle a fetch:
+
+</p>
+<p><em>Callbacks:</em>
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">var Task = Backbone.Model.extend({
+  urlRoot: &quot;/api/task/&quot;
+});
+
+// Server data looks like this: 
+// { id : 4, label : &quot;Clean Bedroom&quot; }
+var clean = new Task({ id : 4 });
+
+clean.fetch({ 
+
+  // On success, output the label
+  success : function(model, response) {
+    console.log(clean.get(&quot;label&quot;)); // &quot;Clean Bedroom&quot;<br>  },
+
+  // On failure, output the status 
+  error : function(model, response) {
+    console.log(&quot;Unable to fetch id&quot;, model.id);
+  }
+
+});</textarea>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="22">
+        <div>
+          <h2>Fetching Cont.</h2>
+<p><em>Deferreds:</em>
+
+</p>
+<p>Deferreds are created within jQuery and a special &quot;promise&quot; object is returned
+whenever you make an asynchronous request to a server.
+
+</p>
+<p>These promises can have as many success/error callbacks as you need, those
+callbacks can be added at any time, and coupled with a <code>when</code> statement, you
+can run parallel requests and only continue once they have all finished.
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+var promise = model.fetch();
+
+promise.then(function() {
+  // Success
+}).fail(function() {
+  // Failure
+});
+
+$.when(promise, model2.fetch()).then(function() {
+  // Model1 and Model2 have been fetched
+});
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="23">
+        <div>
+          <h2>Handling fetch/save errors</h2>
+<p>When making a single request, it might fail for a variety of reasons!
+
+</p>
+<p>If you&#39;re trying to update a user it might:
+
+</p>
+<ul>
+<li>Not exist on the actual server (404)</li>
+<li>Not available for YOU to update (401)</li>
+</ul>
+<p>Both would trigger the <code>error</code> callback and you should check the response object&#39;s status code to handle the error appropriately.
+
+</p>
+<p>Know your HTTP Status Codes:
+
+</p>
+<ul>
+<li><code>1XX</code> Informational</li>
+<li><code>2XX</code> Success</li>
+<li><code>3XX</code> Redirection</li>
+<li><code>4XX</code> Client Error</li>
+<li><code>5XX</code> Server Error</li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="24">
+        <div>
+          <h2>Persisting</h2>
+<p>If the data inside the Model needs to be persisted you can save it to the same
+URL endpoint as defined for fetching.
+
+</p>
+<pre><code class="lang-javascript">model.save();</code></pre>
+<p>The <code>save</code> method is very similar to <code>fetch</code> except that it is dual purpose for
+updates and saving.  Backbone determines which action based on the existence of
+an <code>id</code> property.
+
+
+</p>
+<p>If you&#39;re updating a model, Backbone will know (based on whether the <code>id</code> is set or not.) In that case, it will send the request as an <code>UPDATE</code> type. You can overwrite that if you rather use the <code>PATCH</code> verb, by passing <code>{ patch: true }</code>.</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="25">
+        <div>
+          <h2>Data Parsing</h2>
+<p>Backbone expects your data to look something like this:
+
+</p>
+<p><code>{ id: 5, name: &quot;Ricky Gervais&quot; }</code>
+
+</p>
+<p>However, sometimes it might look like this: 
+
+</p>
+<p>The <code>parse</code> method is called whenever a model&#39;s data is returned by the server, in <code>fetch</code>, and <code>save</code>. The function is passed the raw response object, and should return the <code>attributes</code> hash to be set on the model.
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+var User = Backbone.Model.extend({
+  parse : function(response) {
+    // will return { id: 5, name: &quot;Ricky Gervais&quot; }
+    return response.data; 
+  }
+});</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="26">
+        <div>
+          <h2>Destroying</h2>
+<p>If the data inside the Model should be removed from the API, you can call the
+<code>destroy</code> method.  This works very similar to <code>fetch</code> and <code>save</code>.
+
+</p>
+<pre><code class="lang-javascript">model.destroy();</code></pre>
+<p>One thing to keep in mind is that when you destory a model it will retain the
+<code>id</code> so that you may further reference it.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="27">
+        <div>
+          <h2>Events</h2>
+<p>Models will inherit all events from Collection&#39;s except for <code>reset</code>.
+
+</p>
+<p>The most common event to bind to is <code>change</code>.
+
+</p>
+<div>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+var Task = Backbone.Model.extend({});
+
+var brush = new Task({ label: &quot;Brush teeth&quot;, priority : 1 });
+
+brush.on(&quot;change&quot;, function(model){
+  // These only work within a change callback!
+  console.log(&quot;New Attributes: &quot;, model.changedAttributes());
+  console.log(&quot;Previous Attributes: &quot;, model.previousAttributes());
+  console.log(&quot;Previous Attributes: &quot;, model.previous(&quot;label&quot;));
+});
+
+brush.set({ label : &quot;Brush hair&quot; });
+</textarea>
+</div>
+
+
+<div class="slide">
+The event can be even more
+specific by listing an attribute.
+
+
+<code>javascript
+model.on(&quot;change:attr&quot;, function() {
+
+});
+</code>
+</div>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="28">
+        <div>
+          <script type="codemirror" data-selector="#code_fetch">
+  var User = Backbone.Model.extend({
+    urlRoot : "/users"
+  });
+  var oldSync = Backbone.sync;
+  Backbone.sync = function(method, model, options) {
+    options.success(
+      model, { id : 6, name : "Jon Smith"}, options
+    );
+  };
+</script><h2>Change event on <code>fetch</code> (new model)</h2>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// Create a random object
+var User = Backbone.Model.extend({
+  urlRoot : &quot;/users&quot;
+});
+
+var joe = new User();
+joe.on(&quot;change&quot;, function(model) {
+  console.log(JSON.stringify(model.changedAttributes()));
+});
+
+joe.fetch();</textarea><script type="codemirror/cleanup" data-selector="#code_fetch">
+  Backbone.sync = oldSync;
+</script>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="29">
+        <div>
+          <script type="codemirror" data-selector="#code_fetch3">
+  var User = Backbone.Model.extend({
+    urlRoot : "/users"
+  });
+  var oldSync = Backbone.sync;
+  
+  Backbone.sync = function(method, model, options) {
+    options.success(model, { id : 6, name : "Jon Smith" }, options);
+  };
+  
+  var joe = new User();
+  Backbone.sync = function(method, model, options) {
+    options.success(model, { id : 6, name : "Jon Smith"}, options);
+  };
+  
+  joe.fetch();
+
+  Backbone.sync = function(method, model, options) {
+    options.success(model, { id : 6, name : "Jon Smith", email : "Jon@Smith.com" }, options);
+  };
+
+</script><h2>Change event on <code>fetch</code> (existing model)</h2>
+<p>Assume the server had some data change. It now looks like this: <br>
+<code>{ id : 6, name : &quot;Jon Smith&quot;, <b>email : &quot;Jon@Smith.com&quot;</b> }</code>
+
+</p>
+<textarea id="code_fetch3" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">joe.on(&quot;change&quot;, function(model) {
+  console.log(JSON.stringify(model.changedAttributes()));
+});
+joe.fetch();</textarea><script type="codemirror/cleanup" data-selector="#code_fetch3">
+  Backbone.sync = oldSync;
+</script>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="30">
+        <div>
+          <script type="codemirror" data-selector="#code_destroy">
+  var User = Backbone.Model.extend({
+    urlRoot : "/users"
+  });
+  var oldSync = Backbone.sync;
+  Backbone.sync = function(method, model, options) {
+    options.success(model, {}, options);
+  };
+
+</script><h2>Destroy Event</h2>
+<p>When a model is destroyed, a <code>destroy</code> event is dispatched.
+
+</p>
+<p>
+<textarea id="code_destroy" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+var User = Backbone.Model.extend({ urlRoot : &quot;/users&quot; });
+var joe = new User({ id : 1, name : &quot;Joe Smith&quot; });
+joe.on(&quot;destroy&quot;, function(model) {
+  console.log(&quot;destroy&quot;);
+});
+
+joe.destroy();</textarea>
+</p>
+
+
+<p class="slide larger">
+Calling <code>.destroy()</code> destroys this model on the server if it was already persisted. It will be immidiatly removed from the collection, unless you set <code>{ wait : true }</code> to wait for confirmation from the server.
+</p><script type="codemirror/cleanup" data-selector="#code_destroy">
+  Backbone.sync = oldSync;
+</script>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="31">
+        <div>
+          <h2>Event Flow</h2>
+<pre><code>              change   =&gt;  
+request  =&gt;   destroy  =&gt;  sync  (if all goes well)
+              error    =|</code></pre>
+<textarea id="code_events" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// Create a random object
+var User = Backbone.Model.extend({
+  url : "https://api.github.com/repos/documentcloud/backbone?callback=?"
+});
+
+var joe = new User();
+joe.on("request", function(model) {
+  console.log("request made...");
+});
+joe.on("change", function(model) {
+  console.log("updating with data from server...");
+});
+joe.on("sync", function(model) {
+  console.log("syncing...");
+});
+joe.fetch();</textarea>
+        </div>
+      </section>
+
+      
+
+    </article>
+
+    <script src="resources/backbone/jquery.js"></script>
+    <script>window.jquery || document.write('<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.6.1.min.js">\x3c/script>')</script>
+
+    <!-- deck core and extensions -->
+    <script src="resources/deck.js/core/deck.core.js"></script>
+    <script src="resources/deck.js/extensions/menu/deck.menu.js"></script>
+    <script src="resources/deck.js/extensions/goto/deck.goto.js"></script>
+    <script src="resources/deck.js/extensions/status/deck.status.js"></script>
+    <script src="resources/deck.js/extensions/navigation/deck.navigation.js"></script>
+    <script src="resources/deck.js/extensions/hash/deck.hash.js"></script>
+
+    <!-- include the base codemirror code. -->
+    <script src="resources/deck.js/extensions/codemirror/codemirror.js"></script>
+
+    <!-- include the code syntax you want to highlight -->
+    <!-- javascript -->
+    <script src="resources/deck.js/extensions/codemirror/mode/javascript/javascript.js"></script>
+
+    <!-- html mode : note code miror requires xml, css and javasript modes for html rendering -->
+    <script src="resources/deck.js/extensions/codemirror/mode/xml/xml.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/css/css.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+
+    <script src="resources/deck.js/extensions/codemirror/deck.codemirror.js"></script>
+    <script src="resources/backbone/highlight.pack.js"></script>
+
+    <!-- Backbone resources -->
+    <script src="resources/backbone/lodash.js"></script>
+    <script src="resources/backbone/backbone.js"></script>
+
+    <!-- Stuff specific to this page -->
+    <script src="resources/slides.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>

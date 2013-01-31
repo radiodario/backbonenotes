@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Backbone Training - Router</title>
+  <link href='http://fonts.googleapis.com/css?family=Quicksand:700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body>
+  <h1>Backbone Training - Router Examples</h1>
+  <div id="content">
+    <a href="#about/IreneRos">About IreneRos (/about/IreneRos)</a>
+  </div>
+  
+  <!-- Load libraries -->
+  <script src="../resources/backbone/jquery.js"></script>
+  <script src="../resources/backbone/lodash.js"></script>
+  <script src="../resources/backbone/backbone.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      var ApplicationRouter = Backbone.Router.extend({
+        routes : {
+          // define what callback will be dispatched when we 
+          // navigate to /about.
+          "about/:name" : "about" 
+        },
+
+        // define the callback to be dispatched when the
+        // url changes based on the route we defined
+        // for this callback.
+        about : function(name) {
+          alert("Hi there, my name is: " + name);
+        }
+      });
+
+      // Initialize a new router
+      var router = new ApplicationRouter();
+
+      // Indicate Backbone should keep track of your url history.
+      // This will enable the back button to work for you.
+      Backbone.history.start();
+    });
+  </script>
+  
+</body>
+</html>

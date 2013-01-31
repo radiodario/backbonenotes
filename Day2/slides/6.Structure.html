@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title>Backbone Training :: Models</title>
+  
+  <meta name="description" content="Models">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+  
+  <!-- Core and extension CSS files -->
+  <link rel="stylesheet" href="resources/deck.js/core/deck.core.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/status/deck.status.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/hash/deck.hash.css">
+  <link rel="stylesheet" href="resources/highlightJS/github.css">
+
+  <!-- include code mirror default css and the theme you want. -->
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/deck.codemirror.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/themes/default.css">
+
+  <!-- Theme CSS files (menu swaps these out) -->
+  <link rel="stylesheet" id="transition-theme-link" href="resources/deck.js/themes/transition/fade.css">
+  
+  <link rel="stylesheet" href="resources/slides.css"> 
+  
+  <script src="resources/modernizr.custom.js"></script>
+</head>
+
+<body>
+    
+    <article class="deck-container">
+
+      <section class="slide" id="1">
+        <div>
+          <h1> Section #7 - Structure</h1>
+          <h3>
+            Bocoup Backbone.js Training
+          </h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="2">
+        <div>
+          <h2>Overview</h2>
+<p>Modern web development practices have changed to meet the demand of large
+applications.  There are many best practices for delivering efficient and fast
+resources, but also remain incredibly manageable.
+
+</p>
+<p>The Backbone Boilerplate has been designed by Bocoup to facilitate the
+development of applications, by eliminating common bottlenecks and mistakes.
+
+</p>
+<p>This section covers a number of interesting and beneficial features of the
+Boilerplate:
+
+</p>
+<ul>
+<li>Logical and understable filesystem that is strictly maintained</li>
+<li>Using Modules to define and require dependencies</li>
+<li>Template precompilation and build process</li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="3">
+        <div>
+          <h2>Installing</h2>
+<p>Make sure you have grunt.js installed.
+
+</p>
+<p><code>[sudo] npm install -g grunt</code>
+
+</p>
+<p>To install the Backbone Boilerplate tool globally simply run:
+
+</p>
+<p><code>[sudo] npm install -g bbb</code>
+
+</p>
+<p>This will allow you to start creating new Boilerplate projects, working with
+existing Boilerplate projects, or apps that conform to the Boilerplate style. 
+
+</p>
+<p>Hello world (Tutorial) test:
+
+</p>
+<pre><code class="lang-bash">mkdir test
+cd test
+bbb init
+bbb server</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="4">
+        <div>
+          <h2>Folder Structure</h2>
+<p>It is very important to separate your concerns into a logical folder strucutre.
+
+</p>
+<ul>
+<li><code>app</code> - Application code + templates. Your code (Should be linted.) Your styles + your images.</li>
+<li><code>vendor</code> - Not your code. Contains dependencies (js+css)</li>
+<li><code>tests</code> - Contains your application code tests.</li>
+<li><code>index.html</code> - houses your application and is the main starting point.</li>
+<li><code>package.json</code> - specifies the dependencies of your application</li>
+</ul>
+<pre style="font-family:courier;">.
+├── app
+│   ├── styles
+│   ├── img  (make it!)
+│   ├── modules (make it!)
+│   └── templates (make it!)
+│
+├── vendor
+│   ├── h5bp (html5 boilerplate)
+│   ├── jam  (package management)
+│   └── js
+│       ├── libs (use jamJS!)
+│       └── plugins
+│
+├── test (pick your favorite)
+│   ├── jasmine
+│   └── qunit
+│
+├── index.html
+└── package.json</pre>
+
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="5">
+        <div>
+          <h2>Jam.JS</h2>
+<p>Jam is a package manager for JavaScript.
+
+</p>
+<p><a href="http://jamjs.org/">http://jamjs.org/</a>
+
+</p>
+<p>Install globally:
+<code>npm install -g jamjs</code>
+
+</p>
+<p>Dependencies specified in your <code>package.json</code>:
+
+</p>
+<pre><code class="lang-json">{
+  &quot;name&quot;: &quot;Your App&quot;,
+  &quot;version&quot;: &quot;0.1.0&quot;,
+
+  &quot;jam&quot;: {
+    &quot;packageDir&quot;: &quot;./vendor/jam&quot;,
+    &quot;baseUrl&quot;: &quot;./app&quot;,
+
+    &quot;dependencies&quot;: {
+      &quot;backbone&quot;: &quot;0.9.10&quot;,
+      &quot;jquery&quot;: &quot;1.8.3&quot;,
+      &quot;lodash&quot;: &quot;0.9.2&quot;,
+      &quot;backbone.layoutmanager&quot;: &quot;0.7.1&quot;
+    }
+  }
+}</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="6">
+        <div>
+          <h2>Configuring</h2>
+<p>There are two places you can configure the Boilerplate.  Inside <code>app/config.js</code>
+and <code>grunt.js</code>.
+
+</p>
+<ul>
+<li><code>app/config.js</code> this file contains configuration options specific to loading
+your modules and third-party JavaScript.</li>
+<li><code>grunt.js</code> this file contains the configuration to run the build tool, which
+consumes <code>app/config.js</code>.</li>
+</ul>
+<p>Backbone Boilerplate is fully configured out-of-the-box, but it doesn&#39;t hurt
+to familiarize yourself with how it&#39;s configured in case you need to change
+server ports, or omit/add new tasks.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="7">
+        <div>
+          <h2>Namespace (<code>app.js</code> by default)</h2>
+<p>The namespace file is used for code that should run globally amongst all parts
+of the application.  If you need to configure a plugin or set up defaults,
+this file is the place to ensure it&#39;s loaded before any other part of the
+application.
+
+</p>
+<p>The namespace module should be included in all your modules to get access to
+the special <code>module</code> function it provides.  This function simply creates an
+object for you with a default root property.  It looks something like this:
+
+</p>
+<pre><code class="lang-javascript">{
+  Views: {}
+}</code></pre>
+<p>This file also contains a special <code>app</code> object that is crucial for inter-module
+communication.  It has <code>Backbone.Events</code> mixed in for any Pub/Sub needs.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="8">
+        <div>
+          <h2>Modules</h2>
+<p>A module is used to encapsulate related logic that can be utilized in any
+application so long as the dependencies are satisfied.
+
+</p>
+<p>You can define your modules any way you like, but typically a good set up is
+having a logical component with:
+
+</p>
+<ul>
+<li>A single Model representing the component</li>
+<li>A single Collection holding multiple Model&#39;s</li>
+<li>Various Views to show the Model/Collection</li>
+</ul>
+<p>However, there could be multiple Models, no Collections, lots of Views, etc.
+
+</p>
+<p>You may even want to organize completely differently with Models, Collections,
+Views, etc. being their own modules.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="9">
+        <div>
+          <h2>AMD</h2>
+<p>The Backbone Boilerplate ships with AMD compliance by way of RequireJS/Almond.
+What this means is that it has adopted a widely used standard that will work
+with various loaders and environments.
+
+</p>
+<p>AMD stands for Asynchronous Module Definition, and it was developed by James
+Burke of Mozilla.  
+
+</p>
+<p>AMD allows you to:
+
+</p>
+<ul>
+<li><code>define</code> modules that may have dependencies and return an object that
+represents the module.</li>
+<li><code>require</code> modules that have been previously defined for use</li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="10">
+        <div>
+          <h2>Defining</h2>
+<p>To define a module simply use the <code>define</code> function to specify the dependencies
+and the function to run.
+
+</p>
+<pre><code class="lang-javascript">define([&quot;app&quot;, &quot;modules/dependency&quot;], function(app, Dependency) {
+
+  // This creates a new object for your module
+  var Module = app.module();
+
+  // Use your dependencies as you wish
+  Module.A = new Dependency.Thing();
+
+  // You must return this object so require.js can cache it
+  return Module;
+
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="11">
+        <div>
+          <h2>Requiring</h2>
+<p>To require a module simply use the <code>require</code> function to specify the
+dependencies and the function to run once they have been loaded.
+
+</p>
+<pre><code class="lang-javascript">require([&quot;app&quot;, &quot;modules/dependency&quot;], function(app, Dependency) {
+
+  // Dependency is now the object that was defined in the module
+
+});</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="12">
+        <div>
+          <h2>Stylesheets</h2>
+<p>Within the Backbone Boilerplate structure CSS files are stored inside
+<code>/app/styles/</code>.  Inside this folder by default you will see:
+
+</p>
+<ul>
+<li>index.css</li>
+</ul>
+<p>The index file contains <code>@import</code> statements for each stylesheet you wish to
+load.  Whenever you add a file here, include it as an @import statement.
+
+</p>
+<p>The build process will take all the stylesheets added and concatenate and
+minify them into the <code>index.css</code> file.
+
+</p>
+<pre><code class="lang-bash">bbb mincss</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="13">
+        <div>
+          <h2>Template Compilation</h2>
+<p>Templates should be broken out into separate files for easy development and
+correct syntax highlighting.  They are then assembled by the build process
+into JavaScript functions that can be minified and concatenated into your
+application source.
+
+</p>
+<p>Underscore templates can be compiled with the function:
+
+</p>
+<pre><code class="lang-javascript">_.template(&quot;&lt;%= template_str %&gt;&quot;);</code></pre>
+<p>bbb has a task built-in that will compile all templates for you from the
+<code>app/templates</code> directory.
+
+</p>
+<pre><code class="lang-bash">bbb jst</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="14">
+        <div>
+          <h2>Build Process</h2>
+<p>There are three modes of developing and building with the Backbone Boilerplate.
+
+</p>
+<h3>Development</h3>
+<p>No concatenation, minification, or RequireJS building.  All files are raw in
+the browser so you can see exactly what is erroring and where.
+
+</p>
+<pre><code class="lang-bash">bbb server</code></pre>
+<h3>Debug</h3>
+<p>When you are ready to test how the application will function in production,
+build will the debug mode.  This will allow you to find errors in the build
+process, pre-minification.
+
+</p>
+<pre><code class="lang-bash">bbb debug server:debug</code></pre>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="15">
+        <div>
+          <h2>Build Process</h2>
+<h3>Release</h3>
+<p>This mode is the ultimate in production-ready code.  It will:
+
+</p>
+<ul>
+<li>Build your RequireJS AMD modules</li>
+<li>Pre-compile all templates.</li>
+<li>Concatenate and minify the JS and templates.</li>
+<li>Concatenate and minify the CSS.</li>
+</ul>
+<p>The RequireJS script will be swapped out for Almond.js which is very light
+wrapper.
+
+</p>
+<pre><code class="lang-bash">bbb release server:release</code></pre>
+
+        </div>
+      </section>
+
+      
+
+    </article>
+
+    <script src="resources/backbone/jquery.js"></script>
+    <script>window.jquery || document.write('<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.6.1.min.js">\x3c/script>')</script>
+
+    <!-- deck core and extensions -->
+    <script src="resources/deck.js/core/deck.core.js"></script>
+    <script src="resources/deck.js/extensions/menu/deck.menu.js"></script>
+    <script src="resources/deck.js/extensions/goto/deck.goto.js"></script>
+    <script src="resources/deck.js/extensions/status/deck.status.js"></script>
+    <script src="resources/deck.js/extensions/navigation/deck.navigation.js"></script>
+    <script src="resources/deck.js/extensions/hash/deck.hash.js"></script>
+
+    <!-- include the base codemirror code. -->
+    <script src="resources/deck.js/extensions/codemirror/codemirror.js"></script>
+
+    <!-- include the code syntax you want to highlight -->
+    <!-- javascript -->
+    <script src="resources/deck.js/extensions/codemirror/mode/javascript/javascript.js"></script>
+
+    <!-- html mode : note code miror requires xml, css and javasript modes for html rendering -->
+    <script src="resources/deck.js/extensions/codemirror/mode/xml/xml.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/css/css.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+
+    <script src="resources/deck.js/extensions/codemirror/deck.codemirror.js"></script>
+    <script src="resources/backbone/highlight.pack.js"></script>
+
+    <!-- Backbone resources -->
+    <script src="resources/backbone/lodash.js"></script>
+    <script src="resources/backbone/backbone.js"></script>
+
+    <!-- Stuff specific to this page -->
+    <script src="resources/slides.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>
