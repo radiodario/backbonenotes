@@ -13,8 +13,8 @@ i.e. a 'related video list', this would maybe have:
 * A `video` module (a module is a way of thinking about groups)
 * that would have a `Views` property: `Video.Views`
 * we'd need some models:
-** `Video.RelatedVideo` a model that contains a related video
-** `Video.RelatedVideos` a collection that contains videos
+  * `Video.RelatedVideo` a model that contains a related video
+  * `Video.RelatedVideos` a collection that contains videos
 
 
 ## Element
