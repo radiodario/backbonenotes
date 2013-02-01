@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title>Backbone Training :: Models</title>
+  
+  <meta name="description" content="Models">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+  
+  <!-- Core and extension CSS files -->
+  <link rel="stylesheet" href="resources/deck.js/core/deck.core.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/status/deck.status.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/hash/deck.hash.css">
+  <link rel="stylesheet" href="resources/highlightJS/github.css">
+
+  <!-- include code mirror default css and the theme you want. -->
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/deck.codemirror.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/themes/default.css">
+
+  <!-- Theme CSS files (menu swaps these out) -->
+  <link rel="stylesheet" id="transition-theme-link" href="resources/deck.js/themes/transition/fade.css">
+  
+  <link rel="stylesheet" href="resources/slides.css"> 
+  
+  <script src="resources/modernizr.custom.js"></script>
+</head>
+
+<body>
+    
+    <article class="deck-container">
+
+      <section class="slide" id="1">
+        <div>
+          <h1> Section #9 - Testing</h1>
+          <h3>
+            Bocoup Backbone.js Training
+          </h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="2">
+        <div>
+          <h2>Agenda</h2>
+<ul class="largest">
+  <li>Intro</li>
+  <li>Libraries &amp;  Syntax</li>
+  <li>Advanced Use Cases</li>
+  <li>Automation</li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="3">
+        <div>
+          <h2>What is a Unit Test?</h2>
+<p><p class="largest">&quot;A unit test is a piece of code that tests a piece of production code. It does so by setting up one or a few more objects in a known state, exercising them (e.g. calling a method), and then inspecting the result, comparing it to the expected outcome.&quot;
+</p>
+</p>
+<p><p class="larger">- Christian Johansen, Test-Driven JavaScript Development</p>
+<img src="Support/090.tdjs.png" /></p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="4">
+        <div>
+          <h2>Why Test?</h2>
+ <ul class="largest">
+  <li class="slide">
+    Document your work
+  </li>
+  <li class="slide">
+    Give legitimacy to your open source project
+  </li>
+  <li class="slide">
+    Promote modular design (if you can&#39;t test it, it&#39;s too big)
+  </li>
+  <li class="slide">
+    Prevent regressions
+  </li>
+  <li class="slide">
+    Maintain a scaffolding for re-factoring
+  </li>
+</ul>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="5">
+        <div>
+          <h2>Libraries</h2>
+<p class="largest">QUnit</p>
+<img src="Support/090.jquery_logo.png" />
+<p class="larger">&quot;An easy-to-use JavaScript Unit Testing framework&quot;<br />
+<a href="http://docs.jquery.com/QUnit"><a href="http://docs.jquery.com/QUnit&lt;/a&gt;&lt;/p&gt;">http://docs.jquery.com/QUnit&lt;/a&gt;&lt;/p&gt;</a>
+<p class="largest">Jasmine</p>
+<img src="Support/090.jasmine_logo.png" />
+<p class="larger">&quot;DOM-less simple JavaScript testing framework&quot;<br />
+<a href="http://pivotal.github.com/jasmine/"><a href="http://pivotal.github.com/jasmine/&lt;/a&gt;&lt;/p&gt;">http://pivotal.github.com/jasmine/&lt;/a&gt;&lt;/p&gt;</a>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="6">
+        <div>
+          <h1>Syntax</h1>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="7">
+        <div>
+          <h2>Syntax - Overview</h2>
+ <p class="larger">Some common structures in unit testing:</p>
+<ul>
+  <li class="larger slide">Expectations</li>
+  <li class="larger slide">Organization</li>
+  <li class="larger slide">Setup and teardown</li>
+  <li class="larger slide">Stubbing</li>
+  <li class="larger slide">Asynchronous harnesses</li>
+</ul>
+<p class="larger slide">Both libraries support these patterns (to varying degrees).</p>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="8">
+        <div>
+          <h2>Syntax - Expectations</h2>
+<h3>QUnit: assertions</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">test( &quot;movie retrieval&quot;, function() {
+
+  equal( getBestMovie(), &quot;Blues Brothers&quot;, &quot;passes because we&#39;re on a mission from God&quot; );
+  equal( getWorstMovie(), &quot;Blues Brothers 2000&quot;, &quot;passes because !(&#39;John&#39; in film)&quot; );
+  equal( getOriginalMovie( 2011 ), undefined, &quot;passes because, well&quot; );
+
+});</textarea>
+
+<h3>Jamine: matchers</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">it( &quot;movie retrieval&quot;, function() {
+
+  expect( getBestMovie() ).toBe( &quot;Blues Brothers&quot; );
+  expect( getWorstMovie() ).toBe( &quot;Blues Brothers 2000&quot; );
+  expect( getOriginalMovie( 2011 ) ).not.toBeDefined();
+
+});</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="9">
+        <div>
+          <h2>Syntax - Organization</h2>
+<h3>QUnit: modules</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">module(&quot;charleston&quot;);
+
+test( &quot;possesses strong hand-eye coordination&quot;, function() { /<em> test &quot;work&quot; here </em>/ });
+test( &quot;exhibits little to no shame&quot;, function() { /<em> test &quot;work&quot; here </em>/ });
+
+module(&quot;memphis jookin&#39;&quot;);
+/<em> etc... </em>/</textarea>
+
+<h3>Jamine: &quot;describe&quot; blocks</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">describe(&quot;charleston&quot;, function() {
+
+  it( &quot;possesses strong hand-eye coordination&quot;, function() { /<em> test &quot;work&quot; here </em>/ });
+  it( &quot;exhibits little to no shame&quot;, function() { /<em> test &quot;work&quot; here </em>/ });
+
+});
+describe(&quot;memphis jookin&#39;&quot;, function() { /<em> etc... </em>/ });</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="10">
+        <div>
+          <h2>Syntax - Setup &amp; Teardown</h2>
+<h3>QUnit: modules</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">module( &quot;rocking&quot;, {
+  setup: function() {
+    pickUpGuitar();
+  },
+  teardown: function() {
+    putDownGuitar();
+  });
+test(&quot;shreds&quot;, function() { /<em> test &quot;work&quot; here </em>/ } );
+test(&quot;sets on fire&quot;, function() { /<em> test &quot;work&quot; here </em>/ } );</textarea>
+
+<h3>Jamine: beforeEach / afterEach</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">describe( &quot;rocking&quot;, function() {
+  beforeEach( function() {
+    pickUpGuitar();
+  });
+  afterEach( function() {
+    putDownGuitar();
+  });
+  it( &quot;shreds&quot;, function() { /<em> test &quot;work&quot; here </em>/ });
+  it( &quot;sets on fire&quot;, function() { /<em> test &quot;work&quot; here </em>/ });
+});</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="11">
+        <div>
+          <h2>Syntax - Stubbing (Setup)</h2>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">// Batman&#39;s availability is indeterminant, so code that depends
+// on it can be difficult to test.
+Batman.isAvailable = function() {
+  return Math.random() &gt; 0.5;
+}
+
+Gordon.summonBatman = function() {
+  if (Batman.isAvailable()) {
+    Gordon.meetingWith = &quot;Batman&quot;;
+  } else {
+    Gordon.meetingWith = null;
+  }
+}
+
+Gordon.isBusy = function() {
+  return !!Gordon.meetingWith;
+}
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="12">
+        <div>
+          <h2>Syntax - Stubbing</h2>
+<h3>QUnit: none (roll your own)</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">test( &quot;trysts&quot;, function() {
+  var _isAvailable = Batman.isAvailable;
+  Batman.isAvailable = function( callback ) {
+    return true;
+  };
+
+  Gordon.summonBatman();
+
+  ok( Gordon.isBusy(), &quot;Gordon is busy after summoning Batman&quot; );
+
+  Batman.isAvailable = _isAvailable;
+});</textarea>
+
+<h3>Jamine: spies</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">it( &quot;trysts&quot;, function() {
+
+  spyOn( Batman, &quot;isAvailable&quot; ).andReturn( true );
+
+  Gordon.summonBatman();
+
+  expect( Gordon.isBusy() ).toBeTruthy();
+});</textarea>
+
+<p class="slide">Also see: Sinon.js (standalone JavaScript library for test spies, stubs, and mocks) <a href="https://github.com/cjohansen/Sinon.JS"><a href="https://github.com/cjohansen/Sinon.JS&lt;/a&gt;&lt;/p&gt;">https://github.com/cjohansen/Sinon.JS&lt;/a&gt;&lt;/p&gt;</a>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="13">
+        <div>
+          <h2>Syntax - Async - WRONG WAY</h2>
+<h3>QUnit</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">module(&quot;async&quot;);
+test( &quot;multiple async&quot;, function() {
+
+  setTimeout( function( ) {
+    ok( true, &quot;async operation completed&quot; );
+  }, 500 );
+
+  setTimeout( function() {
+    ok( true, &quot;async operation completed&quot; );
+  }, 500 );
+});</textarea>
+
+<h3>Jamine</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">describe( &quot;async&quot;, function() {
+
+  it( &quot;multiple async&quot;, function() {
+
+    setTimeout( function() {
+      expect( true ).toBeTruthy();
+    }, 500 );
+
+    setTimeout( function() {
+      expect( true ).toBeTruthy();
+    }, 500 );
+  });
+});</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="14">
+        <div>
+          <h2>Syntax - Async - RIGHT WAY</h2>
+<h3>QUnit: stop() and start()</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">module(&quot;async&quot;);
+test( &quot;multiple async&quot;, function() {
+  expect( 2 );
+
+  stop();
+  setTimeout( function( ) {
+    ok( true, &quot;async operation completed&quot; );
+    start();
+  }, 500 );
+
+  stop();
+  setTimeout( function() {
+    ok( true, &quot;async operation completed&quot; );
+    start();
+  }, 500 );
+});</textarea>
+
+<h3>Jamine: waitsFor() and runs()</h3>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">describe( &quot;async&quot;, function() {
+
+  it( &quot;multiple async&quot;, function() {
+
+    var semaphore = 2;
+
+    setTimeout( function() {
+      expect( true ).toBeTruthy();
+      semaphore--;
+    }, 500 );
+
+    setTimeout( function() {
+      expect( true ).toBeTruthy();
+      semaphore--;
+    }, 500 );
+
+    waitsFor( function() { return semaphore === 0 } );
+  });
+});</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="15">
+        <div>
+          <h2>Learn By Example!</h2>
+<p> <p class="largest">
+  Both test frameworks test themselves!
+</p>
+</p>
+<ul class="largest">
+  <li><a href="https://github.com/jquery/qunit/tree/master/test">QUnit tests on GitHub</a> <span class="smaller">(+ <a href="https://github.com/jquery/jquery/tree/master/test/unit">jQuery Unit Tests</a>--over 5,900 tests!)</span></li>
+  <li><a href="https://github.com/pivotal/jasmine/tree/master/spec">Jasmine tests on GitHub</a></li>
+</ul>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="16">
+        <div>
+          <h1>Advanced Use Cases</h1>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="17">
+        <div>
+          <h2>Testing with Require.js</h2>
+<p>In the test runner&#39;s <code>&lt;head&gt;</code> tag:
+
+</p>
+<p><code>&lt;script data-main=&quot;../../app/index&quot; src=&quot;../../assets/js/libs/require.js&quot;&gt;&lt;/script&gt;</code>
+
+</p>
+<p>...and wrap your test files with:
+
+</p>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;">
+define([&quot;modules required by tests&quot;], function(&quot;module namespaces&quot;) {
+  // tests
+});
+</textarea>
+
+<p>QUnit (test runner <code>&lt;head&gt;</code>):
+</p>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;"><script>
+require.config({
+  paths: {
+    tests: &quot;<path to test directory (relative to app)>&quot;
+  }
+});
+
+require([
+  &quot;tests/application&quot;,
+  &quot;tests/layoutmanager&quot;,
+  &quot;tests/line&quot;,
+  &quot;tests/stations&quot;
+  ], function() {} );
+</script></textarea>
+
+<p>Jasmine (test runner <code>&lt;body&gt;</code>):
+</p>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;"><script>
+require.config({
+  paths: {
+    spec: &quot;path to test directory (relative to app)&quot;
+  }
+});
+
+require([
+  &quot;spec/layoutmanager&quot;,
+  &quot;spec/line&quot;
+], function() {
+  jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+  jasmine.getEnv().execute();
+});
+</script></textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="18">
+        <div>
+          <h2>Override Backbone.Sync</h2>
+<p>Fake a response to be data you expect.
+
+</p>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// Store old sync so we can restore it
+var oldSync = Backbone.sync;
+
+// Override synch to just return json we expect
+Backbone.sync = function(method, model, options) {
+  options.success({ id : 6, name : &quot;Jon Smith&quot;});
+};
+
+// Create a random object
+var User = Backbone.Model.extend({
+  urlRoot : &quot;/users&quot;
+});
+
+var joe = new User();
+
+joe.fetch({ success : function(model) {
+  console.log(JSON.stringify(model));
+  // restore old sync.
+  Backbone.sync = oldSync;
+}});</textarea>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="19">
+        <div>
+          <h2>Testing Views</h2>
+<p>This is a trying task for a number of reasons:
+
+</p>
+<ol>
+<li>Most volatile code</li>
+<li>Borderline integration tests--may require a lot of stubbing</li>
+<li>Presentation details can be difficult/inappropriate to meaningfully
+standardize and test across browsers</li>
+</ol>
+<p>Thankfully, testing is not an all-or-nothing thing.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="20">
+        <div>
+          <h2>Testing Views cont.</h2>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;" globals="$,_,Backbone">
+test(&quot;Default view renders with default model&quot;, 2, function() {
+
+  var initError, renderError, dashView;
+  var car = new Car.Model();
+  initError = renderError = false;
+
+  try {
+    dashView = new Car.Views.Dash({
+      model: car
+    });
+  } catch(err) {
+    initError = true;
+  }
+
+  try {
+    dashView.render();
+  } catch(err) {
+    renderError = true;
+  }
+
+  ok(!initError, &quot;Initializes without error.&quot;);
+  ok(!renderError, &quot;Renders without error.&quot;);
+});
+</textarea>
+
+<h3>Why bother?</h3>
+<p>Provides baseline assurances with very little maintainance cost. Run these
+tests on all your views, and build up as appropriate.
+</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="21">
+        <div>
+          <h1>Testing Pitfalls</h1>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="22">
+        <div>
+          <h2>Pitfalls (1)</h2>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;" globals="$,_,Backbone">
+test(&quot;Can be created with default values for its attributes.&quot;, function() {
+  expect( 1 );
+  var todo = new Todo();
+  equal( todo.get(&quot;text&quot;), &quot;&quot; );
+});
+
+test(&quot;Will set attributes on the model instance when created.&quot;, function() {
+  expect( 3 );
+  var todo = new Todo( { text: &quot;Get oil change for car.&quot; } );
+  equal( todo.get(&quot;text&quot;), &quot;Get oil change for car.&quot; );
+  equal( todo.get(&quot;done&quot;), false );
+  equal( todo.get(&quot;order&quot;), 0 );
+});
+</textarea>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="23">
+        <div>
+          <h2>Pitfalls (2)</h2>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;" globals="$,_,Backbone">
+test(&quot;Will call a custom initialize function on the model instance when created.&quot;, function() {
+  expect( 1 );
+  var toot = new Todo({ text: &quot;Stop monkeys from throwing their own crap!&quot; });
+  equal( toot.get(&quot;text&quot;), &quot;Stop monkeys from throwing their own rainbows!&quot; );
+});
+</textarea>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="24">
+        <div>
+          <h2>Pitfalls (3)</h2>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;" globals="$,_,Backbone">
+test(&quot;Fires a custom event when the state changes.&quot;, function() {
+  expect( 1 );
+  var spy = this.spy();
+  var todo = new Todo();
+  todo.bind( &quot;change&quot;, spy );
+  // How would you update a property on the todo here?
+  // Hint: <a href="http://documentcloud.github.com/backbone/#Model-set">http://documentcloud.github.com/backbone/#Model-set</a>
+  todo.set( { text: &quot;new text&quot; } );
+  ok( spy.calledOnce, &quot;A change event callback was correctly triggered&quot; );
+});
+</textarea>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="25">
+        <div>
+          <h2>Additional Resources</h2>
+<h3>Automation - Headless browser tools</h3>
+<h4>Zombie.js</h4>
+<p>&quot;Insanely fast, headless full-stack testing using Node.js&quot; <br>
+<a href="http://zombie.labnotes.org/">http://zombie.labnotes.org/</a>
+
+</p>
+<h4>Phantom.js</h4>
+<p>Headless WebKit with JavaScript API <br>
+<a href="http://www.phantomjs.org">http://www.phantomjs.org</a>
+
+</p>
+<h3>Automation - Headless browser integration</h3>
+<h4>grunt.js</h4>
+<p>QUnit + Phantom.js <br>
+<a href="https://github.com/cowboy/grunt">https://github.com/cowboy/grunt</a>
+
+</p>
+<h4>headless-jasmine-webkit</h4>
+<p>Jasmine + Webkit <br>
+<a href="http://johnbintz.github.com/jasmine-headless-webkit/">http://johnbintz.github.com/jasmine-headless-webkit/</a>
+
+</p>
+<h3>AAutomation - Acceptance test your unit tests</h3>
+<h4>Selenium</h4>
+<p>Browser automation <br>
+<a href="http://seleniumhq.org/">http://seleniumhq.org/</a></p>
+
+        </div>
+      </section>
+
+      
+
+    </article>
+
+    <script src="resources/backbone/jquery.js"></script>
+    <script>window.jquery || document.write('<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.6.1.min.js">\x3c/script>')</script>
+
+    <!-- deck core and extensions -->
+    <script src="resources/deck.js/core/deck.core.js"></script>
+    <script src="resources/deck.js/extensions/menu/deck.menu.js"></script>
+    <script src="resources/deck.js/extensions/goto/deck.goto.js"></script>
+    <script src="resources/deck.js/extensions/status/deck.status.js"></script>
+    <script src="resources/deck.js/extensions/navigation/deck.navigation.js"></script>
+    <script src="resources/deck.js/extensions/hash/deck.hash.js"></script>
+
+    <!-- include the base codemirror code. -->
+    <script src="resources/deck.js/extensions/codemirror/codemirror.js"></script>
+
+    <!-- include the code syntax you want to highlight -->
+    <!-- javascript -->
+    <script src="resources/deck.js/extensions/codemirror/mode/javascript/javascript.js"></script>
+
+    <!-- html mode : note code miror requires xml, css and javasript modes for html rendering -->
+    <script src="resources/deck.js/extensions/codemirror/mode/xml/xml.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/css/css.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+
+    <script src="resources/deck.js/extensions/codemirror/deck.codemirror.js"></script>
+    <script src="resources/backbone/highlight.pack.js"></script>
+
+    <!-- Backbone resources -->
+    <script src="resources/backbone/lodash.js"></script>
+    <script src="resources/backbone/backbone.js"></script>
+
+    <!-- Stuff specific to this page -->
+    <script src="resources/slides.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>

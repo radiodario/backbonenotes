@@ -1,0 +1,72 @@
+body {
+  background: url(/app/img/pinstripe.png);
+  font-family: "Comfortaa", cursive; 
+  color: #CCC;
+  text-transform: lowercase;
+}
+
+h1.logo a {
+  color: #06D1F0;
+}
+
+h1.logo a:hover {
+  text-decoration: none;
+}
+
+hr {
+  background: #06D1F0;
+  height: 2px;
+  border: none;
+}
+
+.toolbar {
+  text-align: right;
+}
+
+ul.thumbnails li:nth-child(4n+1) {
+  margin-left: 0;
+}
+
+a.thumbnail {
+  -webkit-transition: opacity 1s linear;
+
+  border-color: #06D1F0;
+  border-width: 2px;
+
+  border-top-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+a.thumbnail:hover {
+  border-color: #FFF;
+}
+
+video {
+  width: 100%;
+  border: 2px solid #06D1F0;
+  box-sizing: border-box;
+}
+
+canvas {
+  display: none;
+}
+
+.detail {
+  border: 12px solid #FFF;
+  border-bottom-width: 42px;
+  -webkit-box-shadow: 10px 10px 35px #CCC;
+  -o-box-shadow: 10px 10px 35px #CCC;
+  -o-transform: rotate(-3deg);
+  -webkit-transform: rotate(-3deg);
+  max-width: 40%;
+  background: #FFF;
+  display: inline-block;
+}
+
+.delete {
+  margin-top: 30px;
+}
+
+.layout.single .content {
+  text-align: center;
+}

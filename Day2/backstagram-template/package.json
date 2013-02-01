@@ -1,0 +1,17 @@
+{
+  "name": "Backstagram",
+  "version": "0.1.0",
+
+  "jam": {
+    "packageDir": "./vendor/jam",
+    "baseUrl": "./app",
+
+    "dependencies": {
+      "backbone": "0.9.10",
+      "jquery": "1.8.3",
+      "underscore": "1.4.3",
+      "backbone.layoutmanager": "0.8.2",
+      "Backbone.localStorage" : "1.0.0"
+    }
+  }
+}

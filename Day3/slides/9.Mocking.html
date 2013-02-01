@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title>Backbone Training :: Models</title>
+  
+  <meta name="description" content="Models">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+  
+  <!-- Core and extension CSS files -->
+  <link rel="stylesheet" href="resources/deck.js/core/deck.core.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/status/deck.status.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/hash/deck.hash.css">
+  <link rel="stylesheet" href="resources/highlightJS/github.css">
+
+  <!-- include code mirror default css and the theme you want. -->
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/deck.codemirror.css">
+  <link rel="stylesheet" href="resources/deck.js/extensions/codemirror/themes/default.css">
+
+  <!-- Theme CSS files (menu swaps these out) -->
+  <link rel="stylesheet" id="transition-theme-link" href="resources/deck.js/themes/transition/fade.css">
+  
+  <link rel="stylesheet" href="resources/slides.css"> 
+  
+  <script src="resources/modernizr.custom.js"></script>
+</head>
+
+<body>
+    
+    <article class="deck-container">
+
+      <section class="slide" id="1">
+        <div>
+          <h1> Section #10 - Mocking</h1>
+          <h3>
+            Bocoup Backbone.js Training
+          </h3>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="2">
+        <div>
+          <h2>Why</h2>
+<p>Sometimes a lot of your client-side code depends on your server API existing.
+For example:
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+
+var User = Backbone.Model.extend({
+  url : function() {
+    return &quot;/users/&quot; + this.get(&quot;name&quot;);
+  }
+});
+
+var joe = new User({ name : &quot;Smith, Joe&quot; });
+joe.fetch(); // This would trigger an error unless that end point exists!
+</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="3">
+        <div>
+          <h2>Overwrite Backbone.Sync</h2>
+<p>You could fake a response to be data you expect.
+</p>
+<p>
+<textarea id="code_fetch" name="code" class="code" mode="javascript" style="display: none;" runnable="true" globals="$,_,Backbone">
+// Store old sync so we can restore it
+var oldSync = Backbone.sync;
+
+// Override synch to just return json we expect
+Backbone.sync = function(method, model, options) {
+  options.success(model, { id : 6, name : &quot;Jon Smith&quot;}, options);
+};
+
+// Create a random object
+var User = Backbone.Model.extend({
+  urlRoot : &quot;/users&quot;
+});
+
+var joe = new User();
+
+joe.fetch({ success : function(model) {
+  console.log(JSON.stringify(model));
+  // restore old sync.
+  Backbone.sync = oldSync;
+}});</textarea>
+</p>
+
+<p class="slide">
+  That is tedious for every request and requires careful cleanup!
+</p>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="4">
+        <div>
+          <h2>Intercepting ajax requests</h2>
+<p>jQuery allows you to customize the behavior of an ajax request. Specifically, you can use this to intercept a request and send back your own data!
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+$.ajaxTransport(&#39;+*&#39;, function(options, originalOptions, jqXHR) {
+  return {
+    send: function(headers, completeCallback) {
+      completeCallback(200, &quot;OK&quot;, {
+        data : [{ id : 1, name : &quot;Joe&quot;},{ id : 2, name : &quot;Mike&quot;}]
+      });
+    },
+    abort: function() {}
+  };
+});</textarea>
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="5">
+        <div>
+          <h2>Vertabrae.js</h2>
+<p><a href="https://github.com/tbranyen/vertebrae">https://github.com/tbranyen/vertebrae</a>
+
+</p>
+<p>Useful mocking library - Lets you define client-side canned responses to routes. Overwrites jQuery&#39;s ajaxTransport.
+
+</p>
+<textarea id="code" name="code" class="code" mode="javascript" style="display: none;">
+var Mock = Backbone.Vertebrae.extend({
+  routes: {
+    &quot;/animals&quot;: {
+      GET : function(url) {
+        return &quot;[{ &#39;id&#39; : &#39;1&#39;, &#39;name&#39;: &#39;cat&#39; }, { &#39;id&#39; : &#39;2&#39;, &#39;name&#39; : &#39;dog&#39; }]&quot;;
+      }
+    },
+
+    &quot;/animals/:id&quot; : {
+      GET : function(url, id) {
+        return &quot;{ &#39;id&#39; : &#39;1&#39;, &#39;name&#39; : &#39;cat&#39; }&quot;
+      }
+    }
+  }
+});
+</textarea>
+
+<p>In development, include the above in a separate app file (like <code>mock.js</code>) and in your production builds, just exclude it.</p>
+
+        </div>
+      </section>
+
+      
+
+      <section class="slide" id="6">
+        <div>
+          <h1>Real Life Example</h1>
+
+        </div>
+      </section>
+
+      
+
+    </article>
+
+    <script src="resources/backbone/jquery.js"></script>
+    <script>window.jquery || document.write('<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.6.1.min.js">\x3c/script>')</script>
+
+    <!-- deck core and extensions -->
+    <script src="resources/deck.js/core/deck.core.js"></script>
+    <script src="resources/deck.js/extensions/menu/deck.menu.js"></script>
+    <script src="resources/deck.js/extensions/goto/deck.goto.js"></script>
+    <script src="resources/deck.js/extensions/status/deck.status.js"></script>
+    <script src="resources/deck.js/extensions/navigation/deck.navigation.js"></script>
+    <script src="resources/deck.js/extensions/hash/deck.hash.js"></script>
+
+    <!-- include the base codemirror code. -->
+    <script src="resources/deck.js/extensions/codemirror/codemirror.js"></script>
+
+    <!-- include the code syntax you want to highlight -->
+    <!-- javascript -->
+    <script src="resources/deck.js/extensions/codemirror/mode/javascript/javascript.js"></script>
+
+    <!-- html mode : note code miror requires xml, css and javasript modes for html rendering -->
+    <script src="resources/deck.js/extensions/codemirror/mode/xml/xml.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/css/css.js"></script>
+    <script src="resources/deck.js/extensions/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+
+    <script src="resources/deck.js/extensions/codemirror/deck.codemirror.js"></script>
+    <script src="resources/backbone/highlight.pack.js"></script>
+
+    <!-- Backbone resources -->
+    <script src="resources/backbone/lodash.js"></script>
+    <script src="resources/backbone/backbone.js"></script>
+
+    <!-- Stuff specific to this page -->
+    <script src="resources/slides.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>

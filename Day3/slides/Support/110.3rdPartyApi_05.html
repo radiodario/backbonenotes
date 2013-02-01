@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Backbone Training - 3rd Party API Examples</title>
+  <link href='http://fonts.googleapis.com/css?family=Quicksand:700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body>
+  <div id="fb-root"></div>
+  <h1>Backbone Training - 3rd Party API Examples</h1>
+  <div id="content">
+
+    <!-- fake a login button here... -->
+    <h3 class="login-message">
+      <p>
+        <div style="cursor: pointer;">Login with Facebook</div>
+      </p>
+    </h3>
+
+    <div id="response">
+      Session info will go here...
+    </div>
+  </div>
+  
+  <!-- Load libraries -->
+  <script src="../resources/backbone/jquery.js"></script>
+  <script src="../resources/backbone/underscore.js"></script>
+  <script src="../resources/backbone/backbone.js"></script>
+  <script src="../resources/backbone/fb.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      
+      // standard FB init function, with the appID for our sample
+      // Backbone Training App.
+      // Register your own at https://developers.facebook.com/apps
+      FB.init({
+        appId  : '158390997592015',
+        status : true, // check login status
+        cookie : true, // enable cookies to allow the server to access the session
+        xfbml  : false  // parse XFBML
+      });
+      
+      // Kick off your app... should live in a much cleaner location,
+      // but this is to demonstrate the flow.
+      function init(response) {
+        
+        // Initialize the session based on the response from facebook
+        var Session = Backbone.Model.extend({});
+        var session = new Session(response.session);
+        
+        // Define friend model and friends collection using the facebook
+        // graph url.
+        var Friend = Backbone.Model.extend({});
+        var Friends = Backbone.Collection.extend({
+          model : Friend,
+          url : function() {
+            return "https://graph.facebook.com/me/friends?access_token=" + session.get("access_token");
+          },
+          parse : function(response) {
+            return response.data;
+          }
+        });
+        
+        var friends = new Friends();
+        
+        // Fetch friends and update the response div with the list
+        friends.fetch({ success : function(collection) {
+          $('#response').html(JSON.stringify(collection.models));
+        }});
+      }
+      
+      // log into facebook
+      $('.login-message div').click(function(event) {
+        FB.getLoginStatus(function(response) {
+          if (response.session) {
+
+            // if we're already authenticated
+            // initialize new session based on the response session object
+            init(response);
+            
+          } else {
+
+            // if we aren't authenticated, prompt the user to log in
+            FB.login(function(response){
+              
+              // initialize new session based on the response session object
+              if (response.session) {
+                init(response);
+              }
+            });
+          }
+        });
+      });
+    });
+  </script>
+  
+</body>
+</html>

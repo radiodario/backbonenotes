@@ -1,0 +1,75 @@
+body {
+  zoom: 1.2;
+}
+
+article.deck-container {
+  position: absolute;
+  top: 32px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.deck-container .slide .codemirror-scroll {
+  position: relative;
+  height: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: auto;
+  width: 100%;
+}
+img.mytube {
+  max-width:550px;
+}
+
+section[id="1"] h3 {
+  padding-top: 140px;
+}
+pre code {
+  background-color: transparent;
+}
+
+code {
+  background-color: #efefef;
+}
+
+p, ul {
+  font-size: 1.2em;
+}
+
+ul ul {
+  font-size: 0.9em;
+}
+
+b {
+  font-weight: bold;
+  color: orange;
+}
+
+.smaller {
+  font-size: 0.9em;
+}
+.smallest {
+  font-size: 0.6em;
+}
+
+.larger {
+  font-size: 1.4em;
+}
+
+.largest {
+  font-size: 2em;
+}
+
+.slide.indent-1 {
+  margin-left: 40px;
+}
+
+.gist {
+  font-size: 0.9em;
+  max-height: 500px;
+  overflow: auto;
+  border-bottom: 1px solid #ddd;
+}
+.deck-container .slide .codemirror {
+  font-size: 0.9em; 
+}
