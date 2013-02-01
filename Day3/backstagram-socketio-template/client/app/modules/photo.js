@@ -71,15 +71,20 @@ function(app, vintage) {
       // One of these parts is already going to happen. Do you which one and why?
         // re-render is handled by the view, since it is subsribed to the add method
       app.socket.on("new:photo", function(model) {
-        self.add(model);
+
+        if (model.id >= self.length)
+          self.add(model);
         // TK: Pick whichever one of the above two actions needs to happen
         // and do it here!
       });
 
-      app.socket.on('read:photos', function() {
-        self.fetch();
-      })
+      app.socket.on("read:photos", function(model) {
+        self.fetch()
+      });
+
     }
+
+
   });
 
   Photo.Collection.prototype.sync = function(method, collection, options) {
@@ -115,6 +120,7 @@ function(app, vintage) {
     },
 
     cleanup: function() {
+      app.socket.removeListener(null, null);
       this.collection.off(null, null, this);
     }
   });
@@ -128,7 +134,8 @@ function(app, vintage) {
 
         // Turn it into vintage.
         vintage.process(this.canvas.toDataURL(), function(data) {
-          collection.create({ data: data });
+          var caption = $('.caption').val()
+          collection.create({ data: data, caption: caption});
 
           app.router.navigate("", true);
         });
