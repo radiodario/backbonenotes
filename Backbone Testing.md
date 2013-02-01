@@ -69,7 +69,25 @@ Backbone.sync = function(method, model, options) {
 };
 ```
 
+### Testing Views
+this is tricky:
+* Views are volatile
+* They're almost integration tests. 
+* Presentation details are tricky to test accross browsers.
 
+try to test things like initializing and rendering by surrounding them with a `try-catch` and set flags that you ten test. This doesn't have anything to do with what is actually rendered, but it catches errors!
+i.e. if you have a template:
+```html
+<h1><%= make %></h1>
+<h2><%= model %></h2>
+```
+Even if it is this simple, it requires the model to have a `make` and a `model` attributes. Testing Defaults is usually a good idea.
+
+Procedurally generated tests. The more clever you get with your tests, the more things can go wrong.
+
+## Testing Pitfalls
+Make sure your test tests *your* code, not the libraries you're using!
+Always try to group your logic. Also, Testing for default values is kinda useless. 
 
 
 
