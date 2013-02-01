@@ -51,7 +51,7 @@ Always check for the first argument to socket.io emit's `done` callback to see i
 The way in which we patched sync means that we can just add a `realtime = true` flag to a model or collection 
 
 ### Push
-We can push from the serer to the client by adding a listener to a `new` event. The listener might be on a high level entity such as the `router`. You can initialize it in the router, put it in the `main.js` or the `app` object, i.e. somewhere high level in your app. 
+We can push from the serer to the client by adding a listener to a `new` event. The listener might be on a high level entity such as the `router`. You can initialize it in the router, put it in the `main.js` or the `app` object, i.e. somewhere high level in your app. The initialising of a collection is a good place to bind it to a socket!
 
 
 
