@@ -43,8 +43,9 @@ function(app, vintage) {
     cleanup: function() {
       // TK: What might this cleanup method look like?
       // Any events we might want to unbind?
-      this.collection.off("reset");
-      app.off(null, null, this);
+      // remove all the events and callbacks you have related to
+      // this collection.
+      this.collection.off(null, null, this);
     }
   });
 
@@ -148,12 +149,12 @@ function(app, vintage) {
   //    delete button and the model should be destroyed
   //    and the app should redirect back to the index page.
     events: {
-      'click .delete' : 'destroyPhoto'
+      'click button' : 'destroy'
     },
 
-    destroyPhoto : function() {
+    destroy : function() {
       this.model.destroy();
-      app.router.navigate("", true);
+      app.router.navigate("", { trigger : true });
     },
 
   // 3. The photo needs to serialize itself. Look at the detail 

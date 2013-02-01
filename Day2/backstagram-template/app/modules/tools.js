@@ -26,7 +26,6 @@ function(app) {
     },
 
     capturePhoto: function(event) {
-      event.preventDefault();
       app.trigger('photo:capture');
     }
 

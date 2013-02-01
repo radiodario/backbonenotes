@@ -43,3 +43,4 @@ create a new module by calling `app.module()`, define things inside that module,
 ## Stylesheets
 
 ## Template Compilation
+write your templates in the same way as your views
