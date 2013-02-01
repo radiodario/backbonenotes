@@ -88,6 +88,8 @@ Procedurally generated tests. The more clever you get with your tests, the more 
 ## Testing Pitfalls
 Make sure your test tests *your* code, not the libraries you're using!
 Always try to group your logic. Also, Testing for default values is kinda useless. 
+Be verbose about the functions you're testing. 
+When testing events, they are a bit of a red herring. Group tests together that test how things inter-operate. 
 
 
 
