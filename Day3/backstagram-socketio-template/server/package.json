@@ -1,0 +1,22 @@
+{
+  "author": "",
+  "name": "socketio",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bocoup/backstagram.git"
+  },
+  "main": "server.js",
+  "dependencies": {
+    "socket.io": "0.9.2"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "subdomain": "backstagram",
+  "scripts": {
+    "start": "server.js"
+  }
+}
