@@ -19,6 +19,7 @@ function(app, vintage) {
   // websockets. We are going to store these photos on the server instead of
   // local storage!
   Photo.Model.prototype.sync = function(method, model, options) {
+    var deferred = $.Deferred()
     app.socket.emit(
 
       // TK: first parameter is the event name we are emitting.
@@ -44,12 +45,16 @@ function(app, vintage) {
         // passed into the options
         if (message) {
             console.log("...error: " + message);
+            deferred.reject()
             return options.error(message);
         }
         // If no message was provided, then just call the success callback
         // that was passed in the options.
         options.success(model, data, options);
+        //deferred.accept()
     });
+
+    return deferred.promise();
   };
 
   // Default collection.
@@ -120,7 +125,8 @@ function(app, vintage) {
     },
 
     cleanup: function() {
-      app.socket.removeListener(null, null);
+      app.socket.removeAllListeners('new:photo')
+      app.socket.removeAllListeners('read:photos')
       this.collection.off(null, null, this);
     }
   });
